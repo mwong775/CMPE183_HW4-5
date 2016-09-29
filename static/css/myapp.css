@@ -1,4 +1,24 @@
 /* line 1, ../sass/_main.scss */
-.colorful {
-  color: #bb8833;
+.myquote {
+  font-family: 'Consolas', 'Deja Vu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
+}
+
+/* line 3, ../sass/_main.scss */
+.mid_content {
+  background: #00d95a;
+  color: #0000cc;
+}
+
+/* line 8, ../sass/_main.scss */
+div.top_content p {
+  color: #0000cc;
+}
+/* line 9, ../sass/_main.scss */
+div.top_content a {
+  font-weight: bold;
+}
+
+/* line 13, ../sass/_main.scss */
+div.student_list span.email {
+  color: #00d95a;
 }

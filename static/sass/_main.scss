@@ -1,3 +1,14 @@
-.colorful {
-  color: $clrHilight;
+.myquote {font-family: 'Consolas', 'Deja Vu Sans Mono', 'Bitstream Vera Sans Mono', monospace;}
+
+.mid_content {background: $myGreen;
+            color: $myBlue;}
+
+
+div.top_content {
+  p {color: $myBlue;}
+  a {font-weight: bold;}
+}
+
+div.student_list {
+  span.email { color: $myGreen; }
 }
