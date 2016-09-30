@@ -5,10 +5,8 @@
 
 
 div.top_content {
-  p {color: $myBlue;}
-  a {font-weight: bold;}
+  background: $divBk;
+  border-color: darken($divBk, 100%);
+  @include border-radius(20px);
 }
 
-div.student_list {
-  span.email { color: $myGreen; }
-}

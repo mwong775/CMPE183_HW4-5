@@ -9,16 +9,12 @@
   color: #0000cc;
 }
 
-/* line 8, ../sass/_main.scss */
-div.top_content p {
-  color: #0000cc;
-}
-/* line 9, ../sass/_main.scss */
-div.top_content a {
-  font-weight: bold;
-}
-
-/* line 13, ../sass/_main.scss */
-div.student_list span.email {
-  color: #00d95a;
+/* line 7, ../sass/_main.scss */
+div.top_content {
+  background: #cccccc;
+  border-color: black;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  border-radius: 20px;
+  padding: 30px;
 }
