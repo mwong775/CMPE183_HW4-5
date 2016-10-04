@@ -12,3 +12,8 @@
 
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
+
+
+db.define_table('events',
+                Field('event_name'),
+                Field('max_capacity','integer'))
