@@ -18,7 +18,7 @@ def index():
     generated.
     """
     return dict(title=random_text.get_random_title(),
-                n=random_text.get_random_number() - 1,
+                n=random_text.get_random_number() - 100,
                 paragraph1=random_text.get_random_paragraph(),
                 paragraph2=random_text.get_random_paragraph(),
                 )
