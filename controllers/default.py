@@ -8,17 +8,30 @@
 # - download is for downloading files uploaded in the db (does streaming)
 # -------------------------------------------------------------------------
 
+def add_to_pages(s):
+    if session.visited_pages is None:
+        session.visited_pages = [s]
+    elif s not in session.visited_pages:
+        session.visited_pages.append(s)
+
+def has_been_at(s):
+    return session.visited_pages is not None and s in session.visited_pages
 
 def index():
-    """
-    example action using the internationalization operator T and flash
-    rendered by views/default/index.html or views/generic.html
+    # Let's track that we have been here.
+    add_to_pages('index')
+    return dict(place="Initial page")
 
-    if you need a simple wiki simply replace the two lines below with:
-    return auth.wiki()
-    """
-    response.flash = T("Hello World")
-    return dict(message=T('Welcome to web2py!'))
+@auth.requires_login()
+def index1():
+    add_to_pages('index1')
+    return dict(place="Page 1")
+
+@auth.requires_login()
+def index2():
+    if not (has_been_at('index') and has_been_at('index1')):
+        return dict(place="Go away")
+    return dict(place="Page 2")
 
 
 def user():

@@ -7,6 +7,13 @@
 # There is an implicit 'id integer autoincrement' field
 # Consult manual for more options, validators, etc.
 
+import datetime
+
+db.define_table('shopping_list',
+                Field('proprietario', db.auth_user),
+                Field('item'),
+                Field('created_on', 'datetime'),
+                )
 
 
 
