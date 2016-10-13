@@ -11,14 +11,35 @@
 
 def index():
     """
-    example action using the internationalization operator T and flash
-    rendered by views/default/index.html or views/generic.html
-
-    if you need a simple wiki simply replace the two lines below with:
-    return auth.wiki()
+    This is just an example.
     """
-    response.flash = T("Hello World")
-    return dict(message=T('Welcome to web2py!'))
+    names = db().select(db.example_table.ALL)
+    logger.info("Retrieved %d names" % len(names))
+    form = SQLFORM(db.example_table)
+    if form.process().accepted:
+        redirect(URL('default', 'index'))
+    return dict(names=names, form=form)
+
+
+def set_timezone():
+    """Ajax call to set the timezone information for the session."""
+    tz_name = request.vars.name
+    # Validates the name.
+    from pytz import all_timezones_set
+    if tz_name in all_timezones_set:
+        session.user_timezone = tz_name
+        # If the user is logged in, sets also the timezone for the user.
+        # Otherwise, it can happen that a user expires a cookie, then click on edit.
+        # When the user is presented the edit page, the translation is done according to UTC,
+        # but when the user is done editing, due to autodetection, the user is then in
+        # it's own time zone, and the dates of an assignment change.
+        # This really happened.
+        if auth.user is not None:
+            db.auth_user[auth.user.id] = dict(user_timezone = tz_name)
+        logger.info("Set timezone to: %r" % tz_name)
+    else:
+        logger.warning("Invalid timezone received: %r" % tz_name)
+
 
 
 def user():

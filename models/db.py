@@ -76,6 +76,15 @@ mail.settings.login = myconf.get('smtp.login')
 mail.settings.tls = myconf.get('smtp.tls') or False
 mail.settings.ssl = myconf.get('smtp.ssl') or False
 
+# Adds a timezone field to the auth table.
+from pytz.gae import pytz
+from plugin_timezone import tz_nice_detector_widget
+my_tz_nice_detector_widget = lambda field, value : tz_nice_detector_widget(field, value, autodetect=True)
+
+auth.settings.extra_fields['auth_user']= [
+  Field('user_timezone', 'string', widget=my_tz_nice_detector_widget),
+]
+
 # configure auth policy
 auth.settings.registration_requires_verification = False
 auth.settings.registration_requires_approval = False

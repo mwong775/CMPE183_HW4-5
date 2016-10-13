@@ -1,1 +1,10 @@
 {{extend 'layout.html'}}
+
+{{for n in names:}}
+      <div class="name_entry">
+          <span class="name">{{=n.entry_name}}</span>
+          <span class="date">{{=datetime_validator.formatter(n.created_on)}}</span>
+      </div>
+{{pass}}
+
+{{=form}}
