@@ -23,6 +23,17 @@ def index():
         )
     return dict(checklists=checklists)
 
+
+def capitalize_title(min_length):
+    def f(form):
+        """Checks length is long enough and capitalizes it."""
+        if len(form.vars.title) < min_length:
+            form.errors.title = "Please choose a title of length at least %d." % min_length
+        else:
+            # Capitalizes the title.
+            form.vars.title = form.vars.title.upper()
+    return f
+
 # Only access this if one is logged in.  The button to get here is displayed only if one is
 # logged in, but remember, we cannot be sure how people get to pages.
 # Also the user might have been logged in log ago, but now the session might have expired.
@@ -35,6 +46,11 @@ def edit():
     - If there is a checklist id, and there is an additional argument edit=true, it offers a form
       to edit or delete a checklist.
     """
+
+    # Let's log what comes in from the form, if anything.
+    logger.info("Title: %r" % request.post_vars.title)
+    logger.info("Post content: %r" % request.vars.checklist)
+
     if request.args(0) is None:
         # request.args[0] would give an error if there is no argument 0.
         form_type = 'create'
@@ -77,7 +93,7 @@ def edit():
         button_list.append(A('Back', _class='btn btn-primary',
                              _href=URL('default', 'index')))
 
-    if form.process().accepted:
+    if form.process(onvalidation=capitalize_title(7)).accepted:
         # At this point, the record has already been inserted.
         if form_type == 'create':
             session.flash = T('Checklist added.')
