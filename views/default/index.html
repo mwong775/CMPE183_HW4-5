@@ -3,9 +3,13 @@
 <div class="mycontent">
 {{if auth.user_id:}}
 
-    <div class="text-right">
-        <a href="{{=URL('default', 'edit')}}" class="btn btn-warning text-center">
-            <i class="fa fa-plus"></i>New Checklist</a>
+    <div class="text-right" id="add_button">
+        <span class="btn btn-warning text-center">
+            <i class="fa fa-plus"></i>New Checklist</span>
+    </div>
+
+    <div id="add_form" style="display:none">
+        {{=form}}
     </div>
 
     {{if checklists:}}
@@ -39,3 +43,10 @@
 
 {{pass}}
 </div>
+
+<script>
+    $("#add_button").click(function () {
+        $("#add_button").hide();
+        $("#add_form").slideDown();
+    });
+</script>

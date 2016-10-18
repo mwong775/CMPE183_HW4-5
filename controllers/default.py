@@ -21,7 +21,12 @@ def index():
         checklists = db(db.checklist.user_email == auth.user.email).select(
             orderby=~db.checklist.last_opened
         )
-    return dict(checklists=checklists)
+    form = SQLFORM(db.checklist)
+    if form.process().accepted:
+        session.flash = T('Added')
+        redirect(URL('default', 'index'))
+    return dict(form=form,
+                checklists=checklists)
 
 
 def capitalize_title(min_length):
@@ -50,6 +55,9 @@ def edit():
     # Let's log what comes in from the form, if anything.
     logger.info("Title: %r" % request.post_vars.title)
     logger.info("Post content: %r" % request.vars.checklist)
+
+    db.checklist.title.label = ''
+    db.checklist.checklist.label = ''
 
     if request.args(0) is None:
         # request.args[0] would give an error if there is no argument 0.
