@@ -1,1 +1,31 @@
 {{extend 'layout.html'}}
+
+
+<button id="button1" class="btn btn-warning">Press me!</button>
+<button id="button2" class="btn btn-primary">NO press me instead!</button>
+<button id="button3" class="btn btn-primary">Toggle</button>
+<div id="output"></div>
+<div id="other"></div>
+
+<script>
+    var b1_enabled = true;
+    var b1 = $("#button1");
+    $("#button1").click(function (e) {
+        $("#output").text("I am happy.");
+    });
+    $("#button2").click(function () {
+        var t = $("#output").text();
+        console.log("t is:" + t);
+        $("#other").text(t);
+    });
+    $("#button3").click(function () {
+        if (b1_enabled) {
+            b1.addClass("disabled");
+            b1.text("boo");
+        } else {
+            b1.removeClass("disabled");
+            b1.text("haha");
+        }
+        b1_enabled = !b1_enabled;
+    });
+</script>
