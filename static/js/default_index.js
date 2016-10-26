@@ -1,13 +1,13 @@
 // This is the js for the default/index.html view.
 
-var app = function() {
+var app = function () {
 
     var self = {};
 
     Vue.config.silent = false; // show all warnings
 
     // Extends an array
-    self.extend = function(a, b) {
+    self.extend = function (a, b) {
         for (var i = 0; i < b.length; i++) {
             a.push(b[i]);
         }
@@ -40,9 +40,19 @@ var app = function() {
     self.add_track_button = function () {
         // The button to add a track has been pressed.
         self.vue.is_adding_track = !self.vue.is_adding_track;
+        self.vue.is_adding_track_from_spotify = false;
+
+    };
+
+    self.add_track_from_spotify_button = function () {
+        // The button to add a track has been pressed.
+        self.vue.is_adding_track_from_spotify = !self.vue.is_adding_track_from_spotify;
+        self.vue.is_adding_track = false;
+
     };
 
     self.add_track = function () {
+        console.log("Tracks: " + data.track)
         // The submit button to add a track has been added.
         $.post(add_track_url,
             {
@@ -57,7 +67,21 @@ var app = function() {
             });
     };
 
-    self.delete_track = function(track_id) {
+    self.add_track_from_spotify = function () {
+        // The submit button to add a track has been added.
+        $.post(add_track_from_spotify_url,
+            {
+                artist: self.vue.form_artist,
+            },
+            function (data) {
+                $.web2py.enableElement($("#add_track_from_spotify_submit"));
+                for (i = 0; i < data.tracks.length; i++) {
+                    self.vue.tracks.unshift(data.tracks[i]);
+                }
+            });
+    };
+
+    self.delete_track = function (track_id) {
         $.post(del_track_url,
             {
                 track_id: track_id
@@ -85,6 +109,7 @@ var app = function() {
         unsafeDelimiters: ['!{', '}'],
         data: {
             is_adding_track: false,
+            is_adding_track_from_spotify: false,
             tracks: [],
             logged_in: false,
             has_more: false,
@@ -96,7 +121,9 @@ var app = function() {
         methods: {
             get_more: self.get_more,
             add_track_button: self.add_track_button,
+            add_track_from_spotify_button: self.add_track_from_spotify_button,
             add_track: self.add_track,
+            add_track_from_spotify: self.add_track_from_spotify,
             delete_track: self.delete_track
         }
 
@@ -113,4 +140,6 @@ var APP = null;
 
 // This will make everything accessible from the js console;
 // for instance, self.x above would be accessible as APP.x
-jQuery(function(){APP = app();});
+jQuery(function () {
+    APP = app();
+});

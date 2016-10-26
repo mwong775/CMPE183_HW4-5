@@ -1,4 +1,5 @@
 import random
+import requests
 
 def index():
     pass
@@ -49,3 +50,63 @@ def add_track():
 def del_track():
     db(db.track.id == request.vars.track_id).delete()
     return "ok"
+
+
+def _get_artist_id_from_spotify(artist):
+    url = "https://api.spotify.com/v1/search"
+    params = dict(q=artist, type='artist',limit=1)
+    results = requests.get(url=url, params=params)
+    result_json = results.json()
+    items = result_json['artists']['items']
+    if len(items):
+        return items[0]['id']
+    else:
+        return None
+
+
+def _parse_spotify_tracks(results):
+    tracks = results['tracks']
+    ret_tracks = []
+    for track in tracks:
+        t = {}
+        t['album'] = track['album']['name']
+        t['artist'] = track['artists'][0]['name']
+        t['title'] = track['name']
+        t['duration'] = float(track['duration_ms'])/1000.0
+        t['rating'] = float(track['popularity'])/100.0
+        t['num_plays'] = 0
+        db.track.insert(**t)
+        ret_tracks.append(t)
+    return ret_tracks
+
+
+def _get_tracks_from_spotify_for_artist(artist):
+
+    artist_id = _get_artist_id_from_spotify(artist=artist)
+    if artist_id is None:
+        response.flash = T("Artist '{}' not found".format(artist))
+        return []
+    country='US'
+    url = "https://api.spotify.com/v1/artists/{}/top-tracks".format(artist_id)
+    params = {}
+    params['country'] = country
+    results = requests.get(url=url, params=params)
+    results_for_db = _parse_spotify_tracks(results.json())
+    return results_for_db
+
+
+@request.restful()
+@auth.requires_signature()
+def add_track_from_spotify():
+
+    def GET(*args, **vars):
+        return dict()
+
+    def POST(*args, **vars):
+        artist = vars.get('artist','')
+        tracks = _get_tracks_from_spotify_for_artist(artist=artist)
+        if not len(tracks):
+            response.flash = T("Could not get tracks. Please check artist name")
+        return response.json(dict(tracks=tracks))
+
+    return locals()
