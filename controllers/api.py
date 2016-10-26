@@ -57,7 +57,11 @@ def _get_artist_id_from_spotify(artist):
     params = dict(q=artist, type='artist',limit=1)
     results = requests.get(url=url, params=params)
     result_json = results.json()
-    items = result_json['artists']['items']
+    print result_json
+    if result_json.has_key('artists'):
+        items = result_json['artists']['items']
+    else:
+        return None
     if len(items):
         return items[0]['id']
     else:
@@ -107,6 +111,6 @@ def add_track_from_spotify():
         tracks = _get_tracks_from_spotify_for_artist(artist=artist)
         if not len(tracks):
             response.flash = T("Could not get tracks. Please check artist name")
-        return response.json(dict(tracks=tracks))
+        return response.json(dict(tracks_from_spotify=tracks))
 
     return locals()

@@ -52,7 +52,6 @@ var app = function () {
     };
 
     self.add_track = function () {
-        console.log("Tracks: " + data.track)
         // The submit button to add a track has been added.
         $.post(add_track_url,
             {
@@ -71,12 +70,12 @@ var app = function () {
         // The submit button to add a track has been added.
         $.post(add_track_from_spotify_url,
             {
-                artist: self.vue.form_artist,
+                artist: self.vue.form_artist_for_spotify,
             },
             function (data) {
                 $.web2py.enableElement($("#add_track_from_spotify_submit"));
-                for (i = 0; i < data.tracks.length; i++) {
-                    self.vue.tracks.unshift(data.tracks[i]);
+                for (i = 0; i < data.tracks_from_spotify.length; i++) {
+                    self.vue.tracks.unshift(data.tracks_from_spotify[i]);
                 }
             });
     };
@@ -116,7 +115,9 @@ var app = function () {
             form_artist: null,
             form_track: null,
             form_album: null,
-            form_duration: null
+            form_duration: null,
+            form_artist_for_spotify: null,
+
         },
         methods: {
             get_more: self.get_more,
