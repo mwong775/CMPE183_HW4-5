@@ -14,7 +14,10 @@ var app = function() {
     };
 
     // Enumerates an array.
-    var enumerate = function(v) { var k=0; return v.map(function(e) {e._idx = k++;});};
+    var enumerate = function(v) {
+        var k=0;
+        return v.map(function(e) {e._idx = k++;});
+    };
 
     function get_tracks_url(start_idx, end_idx) {
         var pp = {
@@ -84,7 +87,8 @@ var app = function() {
             $("#uploader_div").hide();
         } else {
             // Also sets properly the attribute of the upload form.
-            $("#file-uploader").attr("action", upload_url + "?" + $.param({track_id: track.id}));
+            self.upload_url = upload_url + "?" + $.param({track_id: track.id});
+            self.delete_file_url = delete_file_url + "?" + $.param({track_id: track.id});
             $("#uploader_div").show();
         }
     };
