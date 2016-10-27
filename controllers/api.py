@@ -1,8 +1,10 @@
 import random
 import requests
 
+
 def index():
     pass
+
 
 # Mocks implementation.
 def get_tracks():
@@ -15,14 +17,20 @@ def get_tracks():
     for i, r in enumerate(rows):
         if i < end_idx - start_idx:
             t = dict(
-                id = r.id,
-                artist = r.artist,
-                album = r.album,
-                title = r.title,
-                duration = r.duration,
-                rating = r.rating,
-                num_plays = r.num_plays,
+                id=r.id,
+                artist=r.artist,
+                album=r.album,
+                title=r.title,
+                duration=r.duration,
+                rating=r.rating,
+                num_plays=r.num_plays,
+                track_source = r.track_source
             )
+
+            if r.track_source == 'spotify':
+                t['audio_file'] = "https://embed.spotify.com/?uri={}&theme=white".format(r.track_uri)
+            else:
+                t['audio_file'] = "#"
             tracks.append(t)
         else:
             has_more = True
@@ -33,18 +41,20 @@ def get_tracks():
         has_more=has_more,
     ))
 
+
 @auth.requires_signature()
 def add_track():
     t_id = db.track.insert(
-        artist = request.vars.artist,
-        album = request.vars.album,
-        title = request.vars.title,
-        duration = request.vars.duration,
-        rating = 0,
-        num_plays = 0
+        artist=request.vars.artist,
+        album=request.vars.album,
+        title=request.vars.title,
+        duration=request.vars.duration,
+        rating=0,
+        num_plays=0
     )
     t = db.track(t_id)
     return response.json(dict(track=t))
+
 
 @auth.requires_signature()
 def del_track():
@@ -54,7 +64,7 @@ def del_track():
 
 def _get_artist_id_from_spotify(artist):
     url = "https://api.spotify.com/v1/search"
-    params = dict(q=artist, type='artist',limit=1)
+    params = dict(q=artist, type='artist', limit=1)
     results = requests.get(url=url, params=params)
     result_json = results.json()
     print result_json
@@ -76,21 +86,24 @@ def _parse_spotify_tracks(results):
         t['album'] = track['album']['name']
         t['artist'] = track['artists'][0]['name']
         t['title'] = track['name']
-        t['duration'] = float(track['duration_ms'])/1000.0
-        t['rating'] = float(track['popularity'])/100.0
+        t['duration'] = float(track['duration_ms']) / 1000.0
+        t['rating'] = float(track['popularity']) / 100.0
         t['num_plays'] = 0
+        t['track_source'] = 'spotify'
+        t['track_uri'] = track['uri']
         db.track.insert(**t)
+
+        t['audio_file'] = "https://embed.spotify.com/?uri={}&theme=white".format(t['track_uri'])
         ret_tracks.append(t)
     return ret_tracks
 
 
 def _get_tracks_from_spotify_for_artist(artist):
-
     artist_id = _get_artist_id_from_spotify(artist=artist)
     if artist_id is None:
         response.flash = T("Artist '{}' not found".format(artist))
         return []
-    country='US'
+    country = 'US'
     url = "https://api.spotify.com/v1/artists/{}/top-tracks".format(artist_id)
     params = {}
     params['country'] = country
@@ -102,12 +115,11 @@ def _get_tracks_from_spotify_for_artist(artist):
 @request.restful()
 @auth.requires_signature()
 def add_track_from_spotify():
-
     def GET(*args, **vars):
         return dict()
 
     def POST(*args, **vars):
-        artist = vars.get('artist','')
+        artist = vars.get('artist', '')
         tracks = _get_tracks_from_spotify_for_artist(artist=artist)
         if not len(tracks):
             response.flash = T("Could not get tracks. Please check artist name")

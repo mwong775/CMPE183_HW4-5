@@ -21,6 +21,8 @@ db.define_table('track',
                 Field('num_plays', 'integer'),
                 Field('created_by', default=get_user_email()),
                 Field('created_on', default=datetime.datetime.utcnow()),
+                Field('track_source',default='manual'),
+                Field('track_uri')
                 )
 
 

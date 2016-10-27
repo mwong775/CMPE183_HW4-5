@@ -95,6 +95,7 @@
                     <th>Rating</th>
                     <th>N Plays</th>
                     <th></th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -106,6 +107,8 @@
                     <td>${track.duration}</td>
                     <td>${track.rating}</td>
                     <td>${track.num_plays}</td>
+                    <td v-if="track.track_source=='spotify'"><iframe v-bind:src="track.audio_file" width="300" height="80" frameborder="0" allowtransparency="true"></iframe></td>
+                    <td v-if="track.track_source!='spotify'"><a href="#" class="btn btn-primary" >{{=icon_add}} Add song</a></td>
                     <td><i class="fa fa-trash-o" v-on:click="delete_track(track.id)"></i></td>
                 </tr>
                 </tbody>
