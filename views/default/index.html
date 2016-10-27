@@ -24,6 +24,10 @@
             </button>
         </div>
 
+        <div class="music_controller">
+
+        </div>
+
         <div v-if="is_adding_track" id="add_track_div">
             <form action="#" v-on:submit.prevent="add_track" class="form-horizontal" enctype="multipart/form-data" method="post">
                 <div class="form-group" id="no_table_artist__row">
@@ -72,7 +76,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="track in tracks">
-                    <td></td>
+                    <td><i class="fa" v-bind:class="{'fa-volume-up': track.id == selected_id, 'fa-volume-off': !(track.id == selected_id)}"></i></td>
                     <td>${track.artist}</td>
                     <td>${track.album}</td>
                     <td>${track.title}</td>

@@ -91,7 +91,8 @@ var app = function() {
             form_artist: null,
             form_track: null,
             form_album: null,
-            form_duration: null
+            form_duration: null,
+            selected_id: -1  // Track selected to play.
         },
         methods: {
             get_more: self.get_more,
