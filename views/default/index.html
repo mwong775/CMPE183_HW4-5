@@ -7,21 +7,51 @@
     var add_track_url = "{{=URL('api', 'add_track', user_signature=True)}}";
     var del_track_url = "{{=URL('api', 'del_track', user_signature=True)}}";
 </script>
+
+<script src="{{=URL('static', 'js/dropzone.js')}}"></script>
+
+<script>
+$(function() {
+  var num_files = 0;
+  Dropzone.options.fileUploader = {
+    maxFilesize: 10, // MB
+    addRemoveLinks: true,
+    parallelUploads: 2,
+    createImageThumbnails: false,
+    dictRemoveFile: "Remove",
+    init: function() {
+      this.on("removedfile", function(file) {
+        num_files -= 1;
+        if (file.processing) {
+          $.ajax({
+            url: "{{=URL('default', 'remove')}}",
+            method: "POST",
+            data: {name: file.name}
+          });
+        }
+      });
+      this.on("addedfile", function(file) {
+        num_files += 1;
+      });
+      this.on("queuecomplete", function() {
+      });
+    }
+  }
+});
+</script>
 {{end}}
 
 <div class="main_content">
 
-    <h2>Tracks</h2>
-
-    <div id="vue-div" class="display:none">
-        <div class="button_bar">
-            <button v-if="!is_adding_track" class="btn btn-danger btn-sm" v-on:click="add_track_button()" v-bind:class="{'disabled': !logged_in}">
-            {{=icon_add}}Add track
-            </button>
-            <button v-if="is_adding_track" class="btn btn-warning btn-sm" v-on:click="add_track_button()">
-            {{=icon_cancel}}Cancel
-            </button>
+    <div id="uploader_div" style="display:none">
+      <form action="{{=URL('default', 'upload')}}" class="dropzone dz-clickable" id="file-uploader">
+        <div class="dz-message">
+          Drop files here to upload them, or click to select them.
         </div>
+      </form>
+    </div>
+
+    <div id="vue-div" style="display:none">
 
         <div v-if="selected_id >= 0" class="music_controller">
             <div v-if="selected_url">
@@ -31,6 +61,16 @@
                 No music
             </div>
         </div>
+
+        <div class="button_bar">
+            <button v-if="!is_adding_track" class="btn btn-danger btn-sm" v-on:click="add_track_button()" v-bind:class="{'disabled': !logged_in}">
+            {{=icon_add}}Add track
+            </button>
+            <button v-if="is_adding_track" class="btn btn-warning btn-sm" v-on:click="add_track_button()">
+            {{=icon_cancel}}Cancel
+            </button>
+        </div>
+
 
         <div v-if="is_adding_track" id="add_track_div">
             <form action="#" v-on:submit.prevent="add_track" class="form-horizontal" enctype="multipart/form-data" method="post">
