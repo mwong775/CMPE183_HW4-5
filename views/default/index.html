@@ -76,7 +76,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="track in tracks">
-                    <td><i class="fa" v-bind:class="{'fa-volume-up': track.id == selected_id, 'fa-volume-off': !(track.id == selected_id)}"></i></td>
+                    <td><i class="fa" v-on:click="select_track(track.id)" v-bind:class="{'fa-volume-up': track.id == selected_id, 'fa-volume-off': !(track.id == selected_id)}"></i></td>
                     <td>${track.artist}</td>
                     <td>${track.album}</td>
                     <td>${track.title}</td>

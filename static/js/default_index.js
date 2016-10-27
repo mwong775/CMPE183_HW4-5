@@ -79,6 +79,10 @@ var app = function() {
         )
     };
 
+    self.select_track = function(track_id) {
+        self.vue.selected_id = track_id;
+    };
+
     self.vue = new Vue({
         el: "#vue-div",
         delimiters: ['${', '}'],
@@ -98,7 +102,8 @@ var app = function() {
             get_more: self.get_more,
             add_track_button: self.add_track_button,
             add_track: self.add_track,
-            delete_track: self.delete_track
+            delete_track: self.delete_track,
+            select_track: self.select_track,
         }
 
     });
