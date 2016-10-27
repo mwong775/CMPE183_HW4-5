@@ -21,6 +21,9 @@ def index():
     return dict(message=T('Welcome to web2py!'))
 
 
+def uploader():
+    return dict()
+
 def user():
     """
     exposes:
