@@ -21,6 +21,7 @@ def get_tracks():
                 duration = r.duration,
                 rating = r.rating,
                 num_plays = r.num_plays,
+                track_url = None,
             )
             tracks.append(t)
         else:

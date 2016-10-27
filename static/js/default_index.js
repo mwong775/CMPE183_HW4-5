@@ -26,6 +26,7 @@ var app = function() {
             self.vue.tracks = data.tracks;
             self.vue.has_more = data.has_more;
             self.vue.logged_in = data.logged_in;
+            enumerate(self.vue.tracks);
         })
     };
 
@@ -34,6 +35,7 @@ var app = function() {
         $.getJSON(get_tracks_url(num_tracks, num_tracks + 50), function (data) {
             self.vue.has_more = data.has_more;
             self.extend(self.vue.tracks, data.tracks);
+            enumerate(self.vue.tracks);
         });
     };
 
@@ -54,8 +56,11 @@ var app = function() {
             function (data) {
                 $.web2py.enableElement($("#add_track_submit"));
                 self.vue.tracks.unshift(data.track);
+                enumerate(self.vue.tracks);
             });
     };
+
+    var enumerate = function(v) { var k=0; return v.map(function(e){e._idx = k++;});};
 
     self.delete_track = function(track_id) {
         $.post(del_track_url,
@@ -74,13 +79,17 @@ var app = function() {
                 }
                 if (idx) {
                     self.vue.tracks.splice(idx - 1, 1);
+                    enumerate(self.vue.tracks);
                 }
             }
         )
     };
 
-    self.select_track = function(track_id) {
-        self.vue.selected_id = track_id;
+    self.select_track = function(track_idx) {
+        var track = self.vue.tracks[track_idx];
+        self.vue.selected_idx = track_idx;
+        self.vue.selected_id = track.id;
+        self.vue.selected_url = track.track_url;
     };
 
     self.vue = new Vue({
@@ -96,14 +105,16 @@ var app = function() {
             form_track: null,
             form_album: null,
             form_duration: null,
-            selected_id: -1  // Track selected to play.
+            selected_id: -1,  // Track selected to play.
+            selected_idx: null,
+            selected_url: null
         },
         methods: {
             get_more: self.get_more,
             add_track_button: self.add_track_button,
             add_track: self.add_track,
             delete_track: self.delete_track,
-            select_track: self.select_track,
+            select_track: self.select_track
         }
 
     });

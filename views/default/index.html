@@ -13,7 +13,6 @@
 
     <h2>Tracks</h2>
 
-
     <div id="vue-div" class="display:none">
         <div class="button_bar">
             <button v-if="!is_adding_track" class="btn btn-danger btn-sm" v-on:click="add_track_button()" v-bind:class="{'disabled': !logged_in}">
@@ -24,8 +23,13 @@
             </button>
         </div>
 
-        <div class="music_controller">
-
+        <div v-if="selected_id >= 0" class="music_controller">
+            <div v-if="selected_url">
+                I have music
+            </div>
+            <div v-if="!selected_url">
+                No music
+            </div>
         </div>
 
         <div v-if="is_adding_track" id="add_track_div">
@@ -76,7 +80,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="track in tracks">
-                    <td><i class="fa" v-on:click="select_track(track.id)" v-bind:class="{'fa-volume-up': track.id == selected_id, 'fa-volume-off': !(track.id == selected_id)}"></i></td>
+                    <td><i class="fa" v-on:click="select_track(track._idx)" v-bind:class="{'fa-volume-up': track.id == selected_id, 'fa-volume-off': !(track.id == selected_id)}"></i></td>
                     <td>${track.artist}</td>
                     <td>${track.album}</td>
                     <td>${track.title}</td>
