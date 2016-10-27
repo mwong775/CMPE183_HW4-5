@@ -13,6 +13,9 @@ var app = function() {
         }
     };
 
+    // Enumerates an array.
+    var enumerate = function(v) { var k=0; return v.map(function(e) {e._idx = k++;});};
+
     function get_tracks_url(start_idx, end_idx) {
         var pp = {
             start_idx: start_idx,
@@ -60,27 +63,13 @@ var app = function() {
             });
     };
 
-    var enumerate = function(v) { var k=0; return v.map(function(e){e._idx = k++;});};
 
-    self.delete_track = function(track_id) {
+    self.delete_track = function(track_idx) {
         $.post(del_track_url,
-            {
-                track_id: track_id
-            },
+            { track_id: self.vue.tracks[track_idx].id },
             function () {
-                var idx = null;
-                for (var i = 0; i < self.vue.tracks.length; i++) {
-                    if (self.vue.tracks[i].id === track_id) {
-                        // If I set this to i, it won't work, as the if below will
-                        // return false for items in first position.
-                        idx = i + 1;
-                        break;
-                    }
-                }
-                if (idx) {
-                    self.vue.tracks.splice(idx - 1, 1);
-                    enumerate(self.vue.tracks);
-                }
+                self.vue.tracks.splice(track_idx, 1);
+                enumerate(self.vue.tracks);
             }
         )
     };
