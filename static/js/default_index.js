@@ -79,6 +79,12 @@ var app = function() {
         self.vue.selected_idx = track_idx;
         self.vue.selected_id = track.id;
         self.vue.selected_url = track.track_url;
+        // Shows the uploader if we don't have a track url.
+        if (self.vue.selected_url) {
+            $("#uploader_div").hide();
+        } else {
+            $("#uploader_div").show();
+        }
     };
 
     self.vue = new Vue({
