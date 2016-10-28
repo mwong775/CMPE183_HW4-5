@@ -1,4 +1,4 @@
-import random
+import io
 
 def index():
     pass
@@ -78,4 +78,5 @@ def play_track():
         return HTTP(404)
     headers = {}
     headers['Content-Type'] = t.mime_type
-    return response.stream(t.data_blob, request=request)
+    data_stream = io.BytesIO(t.data_blob)
+    return response.stream(data_stream, chunk_size=4096)
