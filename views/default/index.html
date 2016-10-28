@@ -49,12 +49,9 @@ $(function() {
 
         <div v-if="selected_id >= 0" class="music_controller">
             <div v-if="selected_url">
-                <audio v-bind:src="selected_url" controls>
+                <audio v-bind:src="selected_url" controls autoplay>
                     Your browser does not support the audio element.
                 </audio>
-            </div>
-            <div v-if="!selected_url">
-                No music
             </div>
         </div>
 
