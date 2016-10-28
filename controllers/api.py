@@ -1,4 +1,4 @@
-import io
+import tempfile
 
 def index():
     pass
@@ -78,5 +78,10 @@ def play_track():
         return HTTP(404)
     headers = {}
     headers['Content-Type'] = t.mime_type
-    data_stream = io.BytesIO(t.data_blob)
-    return response.stream(data_stream, chunk_size=4096)
+    # Web2py is setup to stream a file, not a data blob.
+    # So we create a temporary file and we stream it.
+    # f = tempfile.TemporaryFile()
+    f = tempfile.NamedTemporaryFile(delete=False)
+    f.write(t.data_blob)
+    f.seek(0) # Rewind.
+    return response.stream(f, chunk_size=4096)
