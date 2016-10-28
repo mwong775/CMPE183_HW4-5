@@ -19,6 +19,7 @@ db.define_table('track',
                 Field('duration', 'float'),
                 Field('rating', 'float'),
                 Field('num_plays', 'integer'),
+                Field('has_track', 'boolean'),
                 Field('created_by', default=get_user_email()),
                 Field('created_on', default=datetime.datetime.utcnow()),
                 )

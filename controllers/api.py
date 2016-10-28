@@ -13,6 +13,8 @@ def get_tracks():
     rows = db().select(db.track.ALL, limitby=(start_idx, end_idx + 1))
     for i, r in enumerate(rows):
         if i < end_idx - start_idx:
+            # Check if I have a track or not.
+            track_url = URL('api', 'play_track', vars=dict(track_id=r.id)) if r.has_track else None
             t = dict(
                 id = r.id,
                 artist = r.artist,
@@ -21,7 +23,7 @@ def get_tracks():
                 duration = r.duration,
                 rating = r.rating,
                 num_plays = r.num_plays,
-                track_url = None,
+                track_url = track_url,
             )
             tracks.append(t)
         else:
@@ -66,4 +68,14 @@ def upload_track():
         data_blob=request.vars.file.file.read(),
         mime_type=request.vars.file.type,
     )
+    db(db.track.id == track_id).update(has_track=True)
     return "ok"
+
+def play_track():
+    track_id = int(request.vars.track_id)
+    t = db(db.track_data.track_id == track_id).select().first()
+    if t is None:
+        return HTTP(404)
+    headers = {}
+    headers['Content-Type'] = t.mime_type
+    return response.stream(t.data_blob, request=request)
