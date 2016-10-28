@@ -81,7 +81,7 @@ def play_track():
     # Web2py is setup to stream a file, not a data blob.
     # So we create a temporary file and we stream it.
     # f = tempfile.TemporaryFile()
-    f = tempfile.NamedTemporaryFile(delete=False)
+    f = tempfile.NamedTemporaryFile()
     f.write(t.data_blob)
     f.seek(0) # Rewind.
-    return response.stream(f, chunk_size=4096)
+    return response.stream(f.name, chunk_size=4096, request=request)
