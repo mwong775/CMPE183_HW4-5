@@ -27,7 +27,8 @@ $(function() {
     acceptedFiles: 'audio/*',
     createImageThumbnails: false,
     init: function() {
-      this.on("queuecomplete", function() {
+      this.on("complete", function(file) {
+          this.removeFile(file);
       });
     }
   }
