@@ -3,14 +3,20 @@ import tempfile
 def index():
     pass
 
-# Mocks implementation.
 def get_tracks():
     start_idx = int(request.vars.start_idx) if request.vars.start_idx is not None else 0
     end_idx = int(request.vars.end_idx) if request.vars.end_idx is not None else 0
-    # We just generate a lot of of data.
+    # Gets the variables for the sorting.
+    orderby = db.track.artist
+    if request.vars.sort_artist is not None:
+        orderby = db.track.artist if request.vars.sort_artist == 'up' else ~db.track.artist
+    if request.vars.sort_track is not None:
+        orderby = db.track.title if request.vars.sort_track == 'up' else ~db.track.title
     tracks = []
     has_more = False
-    rows = db().select(db.track.ALL, limitby=(start_idx, end_idx + 1))
+    rows = db().select(db.track.ALL,
+                       orderby=orderby,
+                       limitby=(start_idx, end_idx + 1))
     for i, r in enumerate(rows):
         if i < end_idx - start_idx:
             # Check if I have a track or not.

@@ -19,11 +19,22 @@ var app = function() {
         return v.map(function(e) {e._idx = k++;});
     };
 
+        // Sortable fields in table.
+    var sortable = ['artist', 'track'];
+
     function get_tracks_url(start_idx, end_idx) {
         var pp = {
             start_idx: start_idx,
             end_idx: end_idx
         };
+        for (var i = 0; i < sortable.length; i++) {
+            var k = sortable[i];
+            if (self.vue.is_sort_up[k]) {
+                pp['sort_' + k] = 'up';
+            } else if (self.vue.is_sort_down[k]) {
+                pp['sort_' + k] = 'down';
+            }
+        }
         return tracks_url + "?" + $.param(pp);
     }
 
@@ -98,10 +109,31 @@ var app = function() {
     };
 
     self.uploaded_track = function () {
-        self.vue.tracks[self.selected_idx].has_track = true;
+        self.vue.tracks[self.vue.selected_idx].has_track = true;
         self.vue.selected_url = play_url + '?' + $.param({track_id: self.vue.selected_id});
         $("#uploader_div").hide();
     };
+
+    function reset_sort() {
+        for (var i = 0; i < sortable.length; i++) {
+            self.vue.is_sort_up[sortable[i]] = false;
+            self.vue.is_sort_down[sortable[i]] = false;
+        }
+    }
+
+    self.toggle_sort = function (col) {
+        // Toggle the sort for a given column.
+        // The default is to sort down (from largest to smallest).
+        var is_down = self.vue.is_sort_down[col];
+        reset_sort();
+        if (is_down) {
+            self.vue.is_sort_up[col] = true;
+        } else {
+            self.vue.is_sort_down[col] = true;
+        }
+        self.get_tracks();
+    };
+
 
     self.vue = new Vue({
         el: "#vue-div",
@@ -118,7 +150,9 @@ var app = function() {
             form_duration: null,
             selected_id: -1,  // Track selected to play.
             selected_idx: null,
-            selected_url: null
+            selected_url: null,
+            is_sort_up: {'artist': false, 'track': false},
+            is_sort_down: {'artist': false, 'track': false}
         },
         methods: {
             get_more: self.get_more,
@@ -127,6 +161,7 @@ var app = function() {
             delete_track: self.delete_track,
             select_track: self.select_track,
             uploaded_track: self.uploaded_track,
+            toggle_sort: self.toggle_sort
         }
 
     });

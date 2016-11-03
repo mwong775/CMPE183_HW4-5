@@ -104,9 +104,9 @@ $(function() {
                 <thead>
                 <tr>
                     <th></th>
-                    <th>Artist</th>
+                    <th v-on:click="toggle_sort('artist')"><i class="fa" v-bind:class="{'fa-sort-up': is_sort_up.artist, 'fa-sort-down': is_sort_down.artist, 'fa-sort': !(is_sort_up.artist || is_sort_down.artist)}"></i>Artist</th>
                     <th>Album</th>
-                    <th>Track</th>
+                    <th v-on:click="toggle_sort('track')"><i class="fa" v-bind:class="{'fa-sort-up': is_sort_up.track, 'fa-sort-down': is_sort_down.track, 'fa-sort': !(is_sort_up.track || is_sort_down.track)}"></i>Track</th>
                     <th>Duration</th>
                     <th>Rating</th>
                     <th>N Plays</th>
