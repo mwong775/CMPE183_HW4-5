@@ -97,6 +97,12 @@ var app = function() {
         }
     };
 
+    self.uploaded_track = function () {
+        self.vue.tracks[self.selected_idx].has_track = true;
+        self.vue.selected_url = play_url + '?' + $.param({track_id: self.vue.selected_id});
+        $("#uploader_div").hide();
+    };
+
     self.vue = new Vue({
         el: "#vue-div",
         delimiters: ['${', '}'],
@@ -119,7 +125,8 @@ var app = function() {
             add_track_button: self.add_track_button,
             add_track: self.add_track,
             delete_track: self.delete_track,
-            select_track: self.select_track
+            select_track: self.select_track,
+            uploaded_track: self.uploaded_track,
         }
 
     });

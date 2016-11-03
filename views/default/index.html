@@ -29,6 +29,7 @@ $(function() {
     init: function() {
       this.on("complete", function(file) {
           this.removeFile(file);
+          APP.vue.uploaded_track();
       });
     }
   }
