@@ -14,7 +14,6 @@ def get_tracks():
     for i, r in enumerate(rows):
         if i < end_idx - start_idx:
             # Check if I have a track or not.
-            track_url = URL('api', 'play_track', vars=dict(track_id=r.id)) if r.has_track else None
             t = dict(
                 id = r.id,
                 artist = r.artist,
@@ -23,7 +22,7 @@ def get_tracks():
                 duration = r.duration,
                 rating = r.rating,
                 num_plays = r.num_plays,
-                track_url = track_url,
+                has_track = r.has_track,
             )
             tracks.append(t)
         else:
