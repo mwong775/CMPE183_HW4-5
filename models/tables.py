@@ -19,5 +19,8 @@ db.define_table('example_table',
 
 db.example_table.created_on.requires = datetime_validator
 
+# nice_string = datetime_validator.formatter(utc_string)
+# utc_string, error_msg = datetime_validator(nice_string)
+
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
