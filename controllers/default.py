@@ -20,6 +20,29 @@ def index():
     response.flash = T("Hello World")
     return dict(message=T('Welcome to web2py!'))
 
+@auth.requires_login()
+def do_thing1():
+    """Not Ajax"""
+    # Check the user permissions.
+    city = request.vars.city
+    if not access_can_do_thing_1(city):
+        session.message = T('Not Authorized')
+        redirect(URL('default', 'index'))
+    return "ok"
+
+def do_thing2():
+    """Ajax"""
+    if not access_can_do_thing_2():
+        raise HTTP(403)
+    return "ok"
+
+def do_thing3():
+    return "ok"
+
+
+
+
+
 
 def user():
     """
