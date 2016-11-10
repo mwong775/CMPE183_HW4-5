@@ -7,7 +7,7 @@
     var get_cart_url = "{{=URL('default', 'get_cart')}}";
     var post_cart_url = "{{=URL('default', 'post_cart')}}";
     var create_order_url = "{{=URL('default', 'create_order')}}";
-    var show_order_url = "{{=URL('default', 'show_order')}}";
+    var pay_order_url = "{{=URL('default', 'pay_order')}}";
 </script>
 {{end}}
 
@@ -20,7 +20,6 @@
                     <button class="btn" v-on:click="do_search"><i class="fa fa-search fa-lg"></i></button>
                 </span>
                 <span v-if="page=='cart'" class="page_title"><i class="fa fa-shopping-cart"></i> Your Shopping Cart</span>
-                <span v-if="page=='addr'" class="page_title"><i class="fa fa-map"></i> Shipping address</span>
             </div>
             <div class="shopping_button quarter">
                 <span v-if="page=='prod'">
@@ -30,7 +29,6 @@
                 </span>
                 <span v-if="page=='cart'">
                     <button class="btn" v-on:click="goto('prod')"> Continue shopping </button>
-                    <button class="btn red" v-on:click="pay()"> Checkout </button>
                 </span>
             </div>
         </div>
@@ -82,7 +80,10 @@
                     </div>
                 </div>
             </div>
-            <div class="total_price">Your total price: $ ${cart_total}</div>
+            <div class="total_price">
+                Your total price: $ ${cart_total}
+                <button class="btn blue" v-on:click="pay()"><i class="fa fa-lg fa-credit-card"></i> Pay</button>
+            </div>
         </div>
 
     </div>

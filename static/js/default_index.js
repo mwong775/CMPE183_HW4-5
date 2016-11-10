@@ -106,7 +106,7 @@ var app = function() {
             { cart: JSON.stringify(self.vue.cart) },
             function (data) {
                 // Redirect to the page for showing order and the payment.
-                window.location = show_order_url + '?' + $.param({order_number: data.order_number});
+                window.location = pay_order_url + '?' + $.param({order_id: data.order_id});
             }
         );
     };

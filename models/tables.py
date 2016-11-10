@@ -18,5 +18,11 @@ db.define_table('product',
 )
 db.product.id.readable = db.product.id.writable = False
 
+db.define_table('product_order',
+    Field('cart', 'blob'), # We store the entire cart in json.
+    Field('order_key'), # For security.
+    Field('paid', default=False),
+)
+
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)

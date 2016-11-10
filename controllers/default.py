@@ -10,6 +10,8 @@
 
 import json
 
+from gluon.utils import web2py_uuid
+
 def index():
     """
     I am not doing anything here.  Look elsewhere.
@@ -37,7 +39,34 @@ def get_products():
 
 def create_order():
     """Creates an order (AJAX function)"""
-    return "ok"
+    cart = request.vars.cart
+    # Stores the cart, and creates an order number.
+    # It would be better to randomize the order number, but here for simplicity we don't.
+    order_key = web2py_uuid()
+    order_id = db.product_order.insert(cart=cart, order_key=order_key)
+    return response.json(dict(order_id=order_id, order_key=order_key))
+
+def pay_order():
+    """Pays with stripe"""
+    order_id = request.vars.order_id
+    order = db.product_order(order_id)
+    logger.info("Order is: %r", order)
+    cart = json.loads(order.cart)
+    total = 0
+    for p in cart:
+        total += p['cart_quantity'] * p['price']
+    return dict(order_id=order_id, order_key=order.order_key, cart=cart, total=total * 100)
+
+def order_paid():
+    """Payment confirmation from stripe."""
+    order_id = request.args(1)
+    order_key = request.args(2)
+    order = db.product_order(order_id)
+    if order.order_key == order_key:
+        order.update_record(paid=True)
+        logger.info("Order is paid: %r", order)
+        return "ok"
+    raise HTTP(500)
 
 def get_cart():
     return response.json(dict(cart=session.cart or []))

@@ -1,0 +1,18 @@
+{{extend 'layout.html'}}
+
+<h1>Order Number {{=order_id}}</h1>
+
+<form action="{{=URL('default', 'order_paid', args=[order_id, order_key])}}" method="POST">
+<script
+  src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+  data-key="pk_test_CeE2VVxAs3MWCUDMQpWe8KcX"
+  data-amount="{{=total}}"
+  data-name="Our nice shopping cart"
+  data-description="Cart content"
+  data-billing-address="true"
+  data-shipping-address="true"
+  data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+  data-locale="auto">
+</script>
+<input type="hidden" name="pappagallo" value="{{=order_key}}" />
+</form>
