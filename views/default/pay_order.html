@@ -1,8 +1,10 @@
 {{extend 'layout.html'}}
 
-<h1>Order Number {{=order_id}}</h1>
+<h1>Order Confirmation</h1>
 
-<form action="{{=URL('default', 'order_paid', args=[order_id, order_key])}}" method="POST">
+Here, one should display a nicely formatted invoice.
+
+<form action="{{=URL('default', 'order_paid')}}" method="POST">
 <script
   src="https://checkout.stripe.com/checkout.js" class="stripe-button"
   data-key="pk_test_CeE2VVxAs3MWCUDMQpWe8KcX"
@@ -14,5 +16,6 @@
   data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
   data-locale="auto">
 </script>
-<input type="hidden" name="pappagallo" value="{{=order_key}}" />
+<input type="hidden" name="order_id" value="{{=order_id}}" />
+<input type="hidden" name="order_key" value="{{=order_key}}" />
 </form>

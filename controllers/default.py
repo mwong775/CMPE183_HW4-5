@@ -47,7 +47,7 @@ def create_order():
     return response.json(dict(order_id=order_id, order_key=order_key))
 
 def pay_order():
-    """Pays with stripe"""
+    """Displays page to pay with stripe."""
     order_id = request.vars.order_id
     order = db.product_order(order_id)
     logger.info("Order is: %r", order)
@@ -59,11 +59,12 @@ def pay_order():
 
 def order_paid():
     """Payment confirmation from stripe."""
-    order_id = request.args(1)
-    order_key = request.args(2)
+    order_id = request.vars.order_id
+    order_key = request.vars.order_key
     order = db.product_order(order_id)
     if order.order_key == order_key:
-        order.update_record(paid=True)
+        order.update_record(paid=True,
+                            order_details=json.dumps(dict(request.post_vars)))
         logger.info("Order is paid: %r", order)
         return "ok"
     raise HTTP(500)

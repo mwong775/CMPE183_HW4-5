@@ -22,6 +22,7 @@ db.define_table('product_order',
     Field('cart', 'blob'), # We store the entire cart in json.
     Field('order_key'), # For security.
     Field('paid', default=False),
+    Field('order_details', 'blob'), # I just put all here to be quick.
 )
 
 # after defining tables, uncomment below to enable auditing
