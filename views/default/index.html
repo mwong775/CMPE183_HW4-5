@@ -6,6 +6,8 @@
     var products_url = "{{=URL('default', 'get_products')}}";
     var get_cart_url = "{{=URL('default', 'get_cart')}}";
     var post_cart_url = "{{=URL('default', 'post_cart')}}";
+    var create_order_url = "{{=URL('default', 'create_order')}}";
+    var show_order_url = "{{=URL('default', 'show_order')}}";
 </script>
 {{end}}
 
@@ -28,11 +30,7 @@
                 </span>
                 <span v-if="page=='cart'">
                     <button class="btn" v-on:click="goto('prod')"> Continue shopping </button>
-                    <button class="btn red" v-on:click="goto('addr')"> Checkout </button>
-                </span>
-                <span v-if="page=='addr'">
-                    <button class="btn" v-on:click="goto('prod')">Continue shopping</button>
-                    <button class="btn red" v-on:click="goto('pay')"><i class="fa fa-credit-card"></i> Pay</button>
+                    <button class="btn red" v-on:click="pay()"> Checkout </button>
                 </span>
             </div>
         </div>
@@ -86,16 +84,6 @@
             </div>
             <div class="total_price">Your total price: $ ${cart_total}</div>
         </div>
-
-        <div v-if="page=='addr'" id="address_page">
-            <input v-bind="shipping.name" placeholder="Your name"/>
-            <input v-bind="shipping.addr1" placeholder="Street address" />
-            <input v-bind="shipping.addr2" placeholder="Apartment, suite, building, etc." />
-            <input v-bind="shipping.city" placeholder="City" />
-            <input v-bind="shipping.state" placeholder="State" />
-            <input v-bind="shipping.phone" placeholder="Phone number" />
-        </div>
-
 
     </div>
 </div>

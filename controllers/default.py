@@ -35,6 +35,9 @@ def get_products():
         products=products,
     ))
 
+def create_order():
+    """Creates an order (AJAX function)"""
+    return "ok"
 
 def get_cart():
     return response.json(dict(cart=session.cart or []))

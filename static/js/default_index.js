@@ -99,12 +99,16 @@ var app = function() {
         self.vue.page = page;
     };
 
-    var initial_address = {
-        addr1: '',
-        addr2: '',
-        city: '',
-        state: '',
-        phone: ''
+    self.pay = function () {
+        // We need to send the cart, so that the server can
+        // generate an order number, and the page with the stripe button.
+        $.post(create_order_url,
+            { cart: JSON.stringify(self.vue.cart) },
+            function (data) {
+                // Redirect to the page for showing order and the payment.
+                window.location = show_order_url + '?' + $.param({order_number: data.order_number});
+            }
+        );
     };
 
     self.vue = new Vue({
@@ -118,14 +122,6 @@ var app = function() {
             cart_size: 0,
             cart_total: 0,
             page: 'prod',
-            ship_name: '',
-            shipping: {
-                addr1: '',
-                addr2: '',
-                city: '',
-                state: '',
-                phone: ''
-            }
         },
         methods: {
             get_products: self.get_products,
@@ -133,7 +129,8 @@ var app = function() {
             inc_cart_quantity: self.inc_cart_quantity,
             buy_product: self.buy_product,
             goto: self.goto,
-            do_search: self.get_products
+            do_search: self.get_products,
+            pay: self.pay
         }
 
     });
