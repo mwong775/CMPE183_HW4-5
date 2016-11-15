@@ -13,6 +13,10 @@ var app = function() {
         }
     };
 
+    self.play = function(i, j) {
+        alert("Clicked " + i + " " + j);
+    };
+
 
     // Complete as needed.
     self.vue = new Vue({
@@ -22,6 +26,7 @@ var app = function() {
         data: {
         },
         methods: {
+            play: self.play
         }
 
     });

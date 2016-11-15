@@ -7,7 +7,10 @@
 # There is an implicit 'id integer autoincrement' field
 # Consult manual for more options, validators, etc.
 
-
+db.table('board',
+         Field('game_token'),
+         Field('game_state', 'text'),
+         )
 
 
 # after defining tables, uncomment below to enable auditing
