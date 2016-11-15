@@ -20,15 +20,13 @@ var app = function() {
         delimiters: ['${', '}'],
         unsafeDelimiters: ['!{', '}'],
         data: {
-            has_more: false
         },
         methods: {
-            get_more: self.get_more
         }
 
     });
 
-
+    $("#vue-div").show();
     return self;
 };
 

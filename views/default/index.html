@@ -5,14 +5,23 @@
 <script>
     var my_url = "{{=URL('api', 'my_method')}}";
 </script>
+<script src="{{=URL('static', 'js/default_index.js')}}"></script>
 {{end}}
 
 <div class="main_content">
 
-    <div id="vue-div" class="display:none">
+    <div id="vue-div">
+        Hello
         <!-- Your code goes here.  Remember to call $("#vue-div").show() once you get the data for the first time. -->
+        <table>
+            <tr v-for="i in [0, 1, 2]">
+                <td v-for="j in [0, 1, 2]">
+                    i=${i}, j=${j}
+                </td>
+            </tr>
+        </table>
+
     </div>
 
 </div>
 
-<script src="{{=URL('static', 'js/default_index.js')}}"></script>
