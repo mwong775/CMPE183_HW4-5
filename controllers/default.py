@@ -43,6 +43,7 @@ def get_state():
     else:
         # The game has already begun.
         b = json.loads(r.game_state)
+        logger.info("game state: %r" % b)
         if len(b['playing']) == 1:
             # There is one player already.
             # Is it you?
@@ -67,6 +68,45 @@ def get_state():
             theyare = list({'x', 'o'} - {youare})[0]
     session.tictactoe = json.dumps(tictactoe_dict)
     return response.json(dict(state=b, youare=youare, theyare=theyare))
+
+
+def set_state():
+    """Post for new state."""
+    # 1- the game exists.
+    # 2- you are the player the session tells me you are
+    # 3- The board differs from the board I have only by
+    #    the addition of a single symbol, which is equal
+    #    to who you say you are.
+    # 4- It's your turn to play.
+    if not request.vars.p:
+        raise HTTP(500)
+    r = db(db.board.game_token == request.vars.p).select().first()
+    if r is None:
+        raise HTTP(500)
+    b = json.loads(r.game_state)
+    # Let's compute the difference between the two boards.
+    new_board = json.loads(request.vars.new_board)
+    diff = None
+    for i in range(9):
+        if new_board[i] != '' and b['board'][i] == '':
+            if diff is None:
+                # First different symbol.
+                diff = new_board[i]
+            else:
+                raise HTTP(500)
+        elif new_board[i] != b['board'][i]:
+            raise HTTP(500)
+    if diff is None:
+        # No change.
+        return "ok"
+    # Ok, only one symbol is different, and it is in diff.
+    youare = tictactoe_dict.get(request.vars.p)
+    if youare != diff:
+        raise HTTP(500)
+    # Everything is fine.  We can write the new board.
+    b['board'] = new_board
+    r.update_record(game_state = json.dumps(b))
+    return "ok"
 
 
 def is_name_available():

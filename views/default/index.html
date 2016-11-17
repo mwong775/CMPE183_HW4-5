@@ -4,6 +4,7 @@
 <script src="{{=URL('static', 'js/vue.js')}}"></script>
 <script>
     var get_state_url = "{{=URL('default', 'get_state')}}";
+    var set_state_url = "{{=URL('default', 'set_state')}}";
 </script>
 <script src="{{=URL('static', 'js/default_index.js')}}"></script>
 {{end}}
@@ -12,8 +13,8 @@
     <div id="vue-div">
         <!-- Your code goes here.  Remember to call $("#vue-div").show() once you get the data for the first time. -->
         <div class="game_name">
-            <input v-model="game_name" placeholder="Enter a nickname for the game" />
-            <button class="btn green" v-on:click="refresh()"><i class="fa fa-refresh"></i></button>
+            <input v-model="game_name" :disabled="disable_game_input" placeholder="Enter a nickname for the game" />
+            <button class="btn green" v-on:click="start_play()"><i class="fa fa-play-circle"></i></button>
         </div>
 
         <div class="game_info">

@@ -14,9 +14,9 @@ var app = function() {
     };
 
     self.play = function(i, j) {
-        alert("clicked: " + i + " " + j);
         if (self.vue.board[i * 3 + j] === '') {
             self.vue.$set(self.vue.board, i * 3 + j, self.vue.youare);
+            $.post(set_state_url, {p: self.vue.game_name, new_board: JSON.stringify(self.vue.board)});
         }
     };
 
@@ -26,7 +26,7 @@ var app = function() {
             get_state_url + '?' + $.param({p: self.vue.game_name}),
             function (data) {
                 self.vue.youare = data.youare;
-                // self.vue.board = data.state.board;
+                self.vue.board = data.state.board;
                 self.vue.theyare = data.theyare;
                 self.vue.playing = data.state.playing;
                 self.vue.turn = data.state.turn;
@@ -38,6 +38,12 @@ var app = function() {
         setInterval(
             self.refresh, 2000
         )
+    };
+
+    self.start_play = function () {
+        self.vue.disable_game_input = true;
+        self.refresh();
+        self.auto_refresh();
     };
 
     // Complete as needed.
@@ -52,16 +58,17 @@ var app = function() {
             board_string: '',
             turn: '',
             playing: [],
-            game_name: ''
+            game_name: '',
+            disable_game_input: false
         },
         methods: {
             play: self.play,
-            refresh: self.refresh
+            refresh: self.refresh,
+            start_play: self.start_play
         }
 
     });
 
-    self.auto_refresh();
 
     $("#vue-div").show();
     return self;
