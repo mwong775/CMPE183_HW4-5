@@ -15,13 +15,11 @@ def index():
     return dict()
 
 
-def get_initial_board(_):
-    symbol = random.choice(['x', 'o'])
+def get_initial_board(symbol):
     return dict(
         board = [''] * 9,
         turn = symbol,
         playing = [symbol],
-        youare = symbol,
     )
 
 
@@ -35,23 +33,31 @@ def get_state():
     r = db(db.board.game_token == request.vars.p).select().first()
     if r is None:
         # First player.
-        b = get_initial_board(None)
+        symbol = random.choice(['x', 'o'])
+        b = get_initial_board(symbol)
         db.board.insert(game_token = request.vars.p, game_state = json.dumps(b))
         # Marks in the user session that they are playing this role in this game.
-        session.symbol = json.dumps([request.vars.p, b['youare']])
+        tictactoe_dict[request.vars.p] = symbol
+        youare = symbol
     else:
+        # The game has already begun.
         b = json.loads(r.game_state)
         if len(b['playing']) == 1:
+            # There is one player already.
             # Second player.
             symbol = 'x' if 'o' in b['playing'] else 'o'
-            session.symbol = json.dumps([request.vars.p, symbol])
-            b['youare'] = symbol
+            tictactoe_dict[request.vars.p] = symbol
             b['playing'] = ['x', 'o']
             r.update_record(game_state = json.dumps(b))
+            youare = symbol
         else:
-            # Both are already playing, just give back the board state.
-            pass
-    return response.json(dict(state=b))
+            # Both are already playing, just give back the board state, and whose turn it is.
+            youare = tictactoe_dict.get(request.vars.p)
+            # If you are no-one, please go away.
+            if youare is None:
+                raise HTTP(403, 'Not authorized')
+    session.tictactoe = json.dumps(tictactoe_dict)
+    return response.json(dict(state=b, youare=youare))
 
 
 def user():
