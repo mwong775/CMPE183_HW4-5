@@ -14,7 +14,10 @@ var app = function() {
     };
 
     self.play = function(i, j) {
-        alert("Clicked " + i + " " + j);
+        alert("clicked: " + i + " " + j);
+        if (self.vue.board[i * 3 + j] === '') {
+            self.vue.$set(self.vue.board, i * 3 + j, self.vue.youare);
+        }
     };
 
     // Refresh the game.
@@ -23,12 +26,18 @@ var app = function() {
             get_state_url + '?' + $.param({p: self.vue.game_name}),
             function (data) {
                 self.vue.youare = data.youare;
+                // self.vue.board = data.state.board;
                 self.vue.theyare = data.theyare;
-                self.vue.board = data.state.board;
                 self.vue.playing = data.state.playing;
                 self.vue.turn = data.state.turn;
             }
         );
+    };
+
+    self.auto_refresh = function () {
+        setInterval(
+            self.refresh, 2000
+        )
     };
 
     // Complete as needed.
@@ -40,6 +49,7 @@ var app = function() {
             youare: '',
             theyare: '',
             board: ['', '', '', '', '', '', '', '', ''],
+            board_string: '',
             turn: '',
             playing: [],
             game_name: ''
@@ -50,6 +60,8 @@ var app = function() {
         }
 
     });
+
+    self.auto_refresh();
 
     $("#vue-div").show();
     return self;
