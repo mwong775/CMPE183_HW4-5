@@ -10,7 +10,7 @@
 db.define_table(
     'board',
     Field('game_token'),
-    Field('game_state', 'text'),
+    Field('game_state', 'text'), # Json-encoded game state.
 )
 
 

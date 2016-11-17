@@ -3,19 +3,28 @@
 {{block head}}
 <script src="{{=URL('static', 'js/vue.js')}}"></script>
 <script>
-    var my_url = "{{=URL('api', 'my_method')}}";
+    var get_state_url = "{{=URL('default', 'get_state')}}";
 </script>
 <script src="{{=URL('static', 'js/default_index.js')}}"></script>
 {{end}}
 
 <div class="main_content">
-
     <div id="vue-div">
         <!-- Your code goes here.  Remember to call $("#vue-div").show() once you get the data for the first time. -->
+        <div class="game_name">
+            <input v-model="game_name" placeholder="Enter a nickname for the game" />
+            <button class="btn green" v-on:click="refresh()"><i class="fa fa-refresh"></i></button>
+        </div>
+
+        <div class="game_info">
+            <p>You are: ${youare}</p>
+            <p v-if="theyare">The other player has joined.</p>
+        </div>
+
         <table>
             <tr v-for="i in [0, 1, 2]">
                 <td v-for="j in [0, 1, 2]" v-on:click="play(i,j)">
-                    i=${i}, j=${j}
+                    ${board[i * 3 + j]}
                 </td>
             </tr>
         </table>

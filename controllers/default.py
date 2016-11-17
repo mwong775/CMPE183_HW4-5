@@ -19,7 +19,7 @@ def get_initial_board(symbol):
     return dict(
         board = [''] * 9,
         turn = symbol,
-        playing = [symbol],
+        playing = [symbol], # Set of players who showed up already.
     )
 
 
@@ -39,25 +39,38 @@ def get_state():
         # Marks in the user session that they are playing this role in this game.
         tictactoe_dict[request.vars.p] = symbol
         youare = symbol
+        theyare = ''
     else:
         # The game has already begun.
         b = json.loads(r.game_state)
         if len(b['playing']) == 1:
             # There is one player already.
-            # Second player.
-            symbol = 'x' if 'o' in b['playing'] else 'o'
-            tictactoe_dict[request.vars.p] = symbol
-            b['playing'] = ['x', 'o']
-            r.update_record(game_state = json.dumps(b))
-            youare = symbol
+            # Is it you?
+            youare = tictactoe_dict.get(request.vars.p)
+            if youare is not None:
+                # You are playing already.
+                theyare = ''
+            else:
+                # You joined as the second player.
+                theyare = b['playing'][0]
+                symbol = 'x' if 'o' in b['playing'] else 'o'
+                tictactoe_dict[request.vars.p] = symbol
+                b['playing'] = ['x', 'o']
+                r.update_record(game_state = json.dumps(b))
+                youare = symbol
         else:
             # Both are already playing, just give back the board state, and whose turn it is.
             youare = tictactoe_dict.get(request.vars.p)
             # If you are no-one, please go away.
             if youare is None:
                 raise HTTP(403, 'Not authorized')
+            theyare = list({'x', 'o'} - {youare})[0]
     session.tictactoe = json.dumps(tictactoe_dict)
-    return response.json(dict(state=b, youare=youare))
+    return response.json(dict(state=b, youare=youare, theyare=theyare))
+
+
+def is_name_available():
+    return db(db.board.game_token == request.vars.p).select.first() is None
 
 
 def user():

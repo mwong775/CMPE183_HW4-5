@@ -17,6 +17,19 @@ var app = function() {
         alert("Clicked " + i + " " + j);
     };
 
+    // Refresh the game.
+    self.refresh = function () {
+        $.get(
+            get_state_url + '?' + $.param({p: self.vue.game_name}),
+            function (data) {
+                self.vue.youare = data.youare;
+                self.vue.theyare = data.theyare;
+                self.vue.board = data.state.board;
+                self.vue.playing = data.state.playing;
+                self.vue.turn = data.state.turn;
+            }
+        );
+    };
 
     // Complete as needed.
     self.vue = new Vue({
@@ -24,9 +37,16 @@ var app = function() {
         delimiters: ['${', '}'],
         unsafeDelimiters: ['!{', '}'],
         data: {
+            youare: '',
+            theyare: '',
+            board: ['', '', '', '', '', '', '', '', ''],
+            turn: '',
+            playing: [],
+            game_name: ''
         },
         methods: {
-            play: self.play
+            play: self.play,
+            refresh: self.refresh
         }
 
     });
