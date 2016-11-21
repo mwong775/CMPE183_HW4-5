@@ -7,12 +7,6 @@
 
 import traceback
 
-def index():
-    """
-    I am not doing anything here.  Look elsewhere.
-    """
-    return dict()
-
 
 def get_products():
     """Gets the list of products"""
@@ -28,7 +22,8 @@ def get_products():
     ))
 
 
-def product_management():
+@auth.requires_login()
+def index():
     if get_user_email() != 'luca@ucsc.edu':
         raise HTTP(403)
     q = db.product # This queries for all products.
