@@ -13,27 +13,12 @@ import datetime
 db.define_table('product',
     Field('product_name'),
     Field('quantity', 'integer'),
-    Field('price', 'float'),
-    Field('image', 'upload'),
+    Field('price', 'double'),
+    Field('image_url'),
     Field('description', 'text'),
 )
 db.product.id.readable = db.product.id.writable = False
-
-db.define_table('customer_order',
-    Field('order_date', default=datetime.datetime.utcnow()),
-    Field('customer_info', 'blob'),
-    Field('transaction_token', 'blob'),
-    Field('cart', 'blob'),
-)
-
-# Let's define a secret key for stripe transactions.
-from gluon.utils import web2py_uuid
-if session.hmac_key is None:
-    session.hmac_key = web2py_uuid()
-
-
-# after defining tables, uncomment below to enable auditing
-# auth.enable_record_versioning(db)
+db.product.image_url.requires = IS_URL()
 
 import json
 
@@ -43,3 +28,19 @@ def nicefy(b):
     obj = json.loads(b)
     s = json.dumps(obj, indent=2)
     return s
+
+
+def get_user_email():
+    """Note that this function always returns a lowercase email address."""
+    if request.env.web2py_runtime_gae:
+        from google.appengine.api import users as googleusers
+        u = googleusers.get_current_user()
+        if u is None:
+            return None
+        else:
+            return u.email().lower()
+    else:
+        if auth.user is None:
+            return None
+        else:
+            return auth.user.email.lower()

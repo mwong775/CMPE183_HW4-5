@@ -65,8 +65,33 @@ auth = Auth(db, host_names=myconf.get('host.names'))
 service = Service()
 plugins = PluginManager()
 
+## configure auth policy
+auth.settings.registration_requires_verification = False
+auth.settings.registration_requires_approval = False
+auth.settings.reset_password_requires_verification = True
+auth.settings.expiration = 3600 * 24 * 30 # seconds
+
 # create all tables needed by auth if not custom tables
 auth.define_tables(username=False, signature=False)
+
+##### This tells web2py to use GAE logins.
+if request.env.web2py_runtime_gae:
+    # Logging in via Google Accounts
+    from gluon.contrib.login_methods.gae_google_account import GaeGoogleAccount
+    auth.settings.login_form=GaeGoogleAccount()
+    # Permissions
+    auth.settings.login_form = GaeGoogleAccount()
+    auth.settings.actions_disabled.append('request_reset_password')
+    auth.settings.actions_disabled.append('reset_password')
+    auth.settings.actions_disabled.append('retrieve_password')
+    auth.settings.actions_disabled.append('email_reset_password')
+    auth.settings.actions_disabled.append('change_password')
+    auth.settings.actions_disabled.append('retrieve_username')
+    auth.settings.actions_disabled.append('verify_email')
+    auth.settings.actions_disabled.append('register')
+    # auth.settings.actions_disabled.append('profile')
+    db.auth_user.email.writable = False
+
 
 # configure email
 mail = auth.settings.mailer
@@ -97,3 +122,4 @@ logger.setLevel(logging.INFO)
 
 # Let's log the request.
 logger.info("====> Request: %r %r %r %r" % (request.env.request_method, request.env.path_info, request.args, request.vars))
+
