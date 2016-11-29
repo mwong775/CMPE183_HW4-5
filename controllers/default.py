@@ -23,6 +23,9 @@ def get_initial_board(symbol):
     )
 
 
+def complement(symbol):
+    return list({'x', 'o'} - {symbol})[0]
+
 def get_state():
     """
     ?p=yadayada
@@ -65,7 +68,7 @@ def get_state():
             # If you are no-one, please go away.
             if youare is None:
                 raise HTTP(403, 'Not authorized')
-            theyare = list({'x', 'o'} - {youare})[0]
+            theyare = complement(youare)
     session.tictactoe = json.dumps(tictactoe_dict)
     return response.json(dict(state=b, youare=youare, theyare=theyare))
 
@@ -103,7 +106,12 @@ def set_state():
     youare = tictactoe_dict.get(request.vars.p)
     if youare != diff:
         raise HTTP(500)
-    # Everything is fine.  We can write the new board.
+    # Check that the player who played has the turn.
+    if b.get('turn') != diff:
+        raise HTTP(500)
+    # Complements the turn.
+    b['turn'] = complement(b['turn'])
+    # Updates the board.
     b['board'] = new_board
     r.update_record(game_state = json.dumps(b))
     return "ok"
