@@ -9,16 +9,41 @@
 # -------------------------------------------------------------------------
 
 
-def index():
-    """
-    example action using the internationalization operator T and flash
-    rendered by views/default/index.html or views/generic.html
+IMAGE_URLS = [
+    'https://storage.googleapis.com/lucadealfaro-share/img1.jpg',
+    'https://storage.googleapis.com/lucadealfaro-share/img2.jpg',
+    'https://storage.googleapis.com/lucadealfaro-share/img3.jpg',
+    'https://storage.googleapis.com/lucadealfaro-share/img4.jpg',
+]
 
-    if you need a simple wiki simply replace the two lines below with:
-    return auth.wiki()
-    """
-    response.flash = T("Hello World")
-    return dict(message=T('Welcome to web2py!'))
+def index():
+
+    def get_num_stars(img_idx):
+        if not auth.user_id:
+            return None
+        r = db((db.rating.user_id == auth.user_id) & (db.rating.image_id == img_idx)).select().first()
+        return None if r is None else r.num_stars
+
+    image_list = []
+    for i, img_url in enumerate(IMAGE_URLS):
+        image_list.append(dict(
+            url=img_url,
+            num_stars = get_num_stars(i),
+            id=i,
+        ))
+    return dict(image_list=image_list)
+
+@auth.requires_signature()
+def vote():
+    picid = int(request.vars.picid)
+    num_stars = int(request.vars.rating)
+    db.rating.update_or_insert(
+        ((db.rating.image_id == picid) & (db.rating.user_id == auth.user_id)),
+        image_id = picid,
+        user_id = auth.user_id,
+        num_stars = num_stars
+    )
+    return "ok"
 
 
 def user():

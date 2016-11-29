@@ -1,18 +1,46 @@
 {{extend 'layout.html'}}
 
-{{block head}}
-<script src="{{=URL('static', 'js/vue.js')}}"></script>
-<script>
-    var my_url = "{{=URL('api', 'my_method')}}";
-</script>
-{{end}}
-
-<div class="main_content">
-
-    <div id="vue-div" class="display:none">
-        <!-- Your code goes here.  Remember to call $("#vue-div").show() once you get the data for the first time. -->
-    </div>
-
+{{for img_info in image_list:}}
+<div style="display:inline-block; margin:10px;">
+   <img src="{{=img_info['url']}}" style="height:200px" />
+   <div>
+     {{if auth.user:}}
+     <input class="form-control rating" value="{{=img_info['num_stars']}}" data-picid="{{=img_info['id']}}"/>
+     {{pass}}
+   </div>
 </div>
+{{pass}}
 
-<script src="{{=URL('static', 'js/default_index.js')}}"></script>
+
+<script>
+    jQuery('input.rating').each(function(){
+        var span = jQuery('<span style="white-space:nowrap" />');
+        var self = jQuery(this).hide().after(span);
+        var fill_stars = function() {
+            var k = parseInt(self.val()) || 0;
+            for(var i=1; i<6; i++) span.find('.rate'+i).html((i<=k)?'&#x2605;':'&#x2606;');
+        };
+        for(var k=1; k<6; k++) (function(k){
+            span.append('<span class="rate'+k+'">&#x2606;</span>');
+            // el.event1(   ).event2(   ).event3(   )
+            // el.event1(   );
+            // el.event2(   );
+            span.find('.rate'+k).mouseover(function(){
+                for(var i=1; i<6; i++) span.find('.rate'+i).html((i<=k)?'&#x2605;':'&#x2606;');
+            }).click(function(){
+                self.val(k); // for an input node n, n.val() returns the value, n.val(x) sets value to x
+                fill_stars();
+                jQuery.post(
+                    '{{=URL('vote', user_signature=True)}}', // URL for the AJAX call
+                    {   // Dictionary of names to values. The server will have:
+                        'picid':self.attr('data-picid'),  // request.vars.picid
+                        'rating':k   // request.vars.rating
+                    }
+                );
+            });
+        })(k); // To ensure k is properly bound inside the event listener.
+        span.mouseout(fill_stars);  // To make sure we show the correct n of stars, even if we moved
+                                    // the mouse after clicking.
+        fill_stars();
+    });
+</script>
