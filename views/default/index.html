@@ -16,7 +16,7 @@
         <div v-for="img in image_list" style="display:inline-block; margin:10px;">
             <img v-bind:src="img.url" style="height:200px" />
             <div v-if="is_logged_in">
-                <span v-for="idx in star_indices">
+                <span v-on:mouseover="mouse_over(img._idx, idx)" v-for="idx in star_indices">
                     <i v-if="idx <= img.num_stars_display" class="fa fa-star"></i>
                     <i v-if="idx > img.num_stars_display" class="fa fa-star-o"></i>
                 </span>

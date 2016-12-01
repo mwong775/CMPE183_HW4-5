@@ -13,10 +13,21 @@ var app = function() {
         }
     };
 
+    // Enumerates an array.
+    var enumerate = function(v) {
+        var k=0;
+        return v.map(function(e) {e._idx = k++;});
+    };
+
     self.get_info = function () {
         $.getJSON(get_info_url, function (data) {
             self.vue.image_list = data.image_list;
+            enumerate(self.vue.image_list);
         });
+    };
+
+    self.mouse_over = function (img_idx, star_idx) {
+        self.vue.image_list[img_idx].num_stars_display = star_idx;
     };
 
     // Complete as needed.
@@ -30,6 +41,7 @@ var app = function() {
             star_indices: [1, 2, 3, 4, 5]
         },
         methods: {
+            mouse_over: self.mouse_over
         }
 
     });
