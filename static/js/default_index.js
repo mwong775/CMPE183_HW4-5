@@ -30,6 +30,19 @@ var app = function() {
         self.vue.image_list[img_idx].num_stars_display = star_idx;
     };
 
+    self.mouse_out = function(img_idx) {
+        self.vue.image_list[img_idx].num_stars_display = self.vue.image_list[img_idx].num_stars;
+    };
+
+    self.set_stars = function(img_idx, star_idx) {
+        self.vue.image_list[img_idx].num_stars = star_idx;
+        $.post(vote_url,
+            {
+                image_id: self.vue.image_list[img_idx].id,
+                num_stars: star_idx
+            })
+    };
+
     // Complete as needed.
     self.vue = new Vue({
         el: "#vue-div",
@@ -41,7 +54,9 @@ var app = function() {
             star_indices: [1, 2, 3, 4, 5]
         },
         methods: {
-            mouse_over: self.mouse_over
+            mouse_over: self.mouse_over,
+            mouse_out: self.mouse_out,
+            set_stars: self.set_stars
         }
 
     });

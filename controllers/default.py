@@ -41,8 +41,8 @@ def get_info():
 
 @auth.requires_signature()
 def vote():
-    picid = int(request.vars.picid)
-    num_stars = int(request.vars.rating)
+    picid = int(request.vars.image_id)
+    num_stars = int(request.vars.num_stars)
     db.rating.update_or_insert(
         ((db.rating.image_id == picid) & (db.rating.user_id == auth.user_id)),
         image_id = picid,
