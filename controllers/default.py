@@ -8,6 +8,7 @@
 # - download is for downloading files uploaded in the db (does streaming)
 # -------------------------------------------------------------------------
 
+import time
 
 IMAGE_URLS = [
     'https://storage.googleapis.com/lucadealfaro-share/img1.jpg',
@@ -49,6 +50,7 @@ def vote():
         user_id = auth.user_id,
         num_stars = num_stars
     )
+    time.sleep(0.5) # To make testing easier.
     return "ok"
 
 

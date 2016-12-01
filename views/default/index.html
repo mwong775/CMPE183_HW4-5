@@ -23,6 +23,7 @@
                         <i v-if="idx <= img.num_stars_display" class="fa fa-star"></i>
                         <i v-if="idx > img.num_stars_display" class="fa fa-star-o"></i>
                     </span>
+                    <i v-if="img._pending" class="fa fa-spinner fa-spin"></i>
                 </span>
             </div>
         </div>

@@ -19,10 +19,16 @@ var app = function() {
         return v.map(function(e) {e._idx = k++;});
     };
 
+    // Decorate the array of images.
+    var decorate = function(v) {
+        return v.map(function(e) {e._pending = false;});
+    };
+
     self.get_info = function () {
         $.getJSON(get_info_url, function (data) {
             self.vue.image_list = data.image_list;
             enumerate(self.vue.image_list);
+            decorate(self.vue.image_list);
         });
     };
 
@@ -35,12 +41,21 @@ var app = function() {
     };
 
     self.set_stars = function(img_idx, star_idx) {
-        self.vue.image_list[img_idx].num_stars = star_idx;
+        var img = self.vue.image_list[img_idx];
+        img.num_stars = star_idx;
+        img._pending = true;
+        self.vue.$set(self.vue.image_list, img_idx, img);
         $.post(vote_url,
             {
-                image_id: self.vue.image_list[img_idx].id,
+                image_id: img.id,
                 num_stars: star_idx
-            })
+            },
+            function () {
+                img = self.vue.image_list[img_idx];
+                img._pending = false;
+                self.vue.$set(self.vue.image_list, img_idx, img);
+            }
+            )
     };
 
     // Complete as needed.
