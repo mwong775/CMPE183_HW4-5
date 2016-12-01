@@ -13,6 +13,11 @@ var app = function() {
         }
     };
 
+    self.get_info = function () {
+        $.getJSON(get_info_url, function (data) {
+            self.vue.image_list = data.image_list;
+        });
+    };
 
     // Complete as needed.
     self.vue = new Vue({
@@ -20,14 +25,17 @@ var app = function() {
         delimiters: ['${', '}'],
         unsafeDelimiters: ['!{', '}'],
         data: {
-            has_more: false
+            image_list: [],
+            is_logged_in: is_logged_in,
+            star_indices: [1, 2, 3, 4, 5]
         },
         methods: {
-            get_more: self.get_more
         }
 
     });
 
+    self.get_info();
+    $("#vue-div").show();
 
     return self;
 };

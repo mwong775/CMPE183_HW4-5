@@ -17,21 +17,27 @@ IMAGE_URLS = [
 ]
 
 def index():
+    return dict()
 
+
+def get_info():
     def get_num_stars(img_idx):
         if not auth.user_id:
             return None
         r = db((db.rating.user_id == auth.user_id) & (db.rating.image_id == img_idx)).select().first()
-        return None if r is None else r.num_stars
+        return 0 if r is None else r.num_stars
 
     image_list = []
     for i, img_url in enumerate(IMAGE_URLS):
+        n = get_num_stars(i)
         image_list.append(dict(
             url=img_url,
-            num_stars = get_num_stars(i),
+            num_stars = n,
+            num_stars_display = n, # To facilitate vue
             id=i,
         ))
-    return dict(image_list=image_list)
+    return response.json(dict(image_list=image_list))
+
 
 @auth.requires_signature()
 def vote():
