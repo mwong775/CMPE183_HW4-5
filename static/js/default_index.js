@@ -19,12 +19,12 @@ var app = function() {
         delimiters: ['${', '}'],
         unsafeDelimiters: ['!{', '}'],
         data: {
+            salutation: 'hello',
+            thing_list: ['duck', 'cat', 'cow', 'donkey']
         },
         methods: {
         }
-
     });
-
 
     return self;
 };
