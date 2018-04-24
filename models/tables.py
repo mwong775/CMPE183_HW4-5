@@ -7,7 +7,10 @@
 # There is an implicit 'id integer autoincrement' field
 # Consult manual for more options, validators, etc.
 
-
+db.define_table('compatible',
+                Field('ingredient1'),
+                Field('ingredient2')
+                )
 
 
 # after defining tables, uncomment below to enable auditing

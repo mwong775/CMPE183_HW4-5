@@ -10,15 +10,48 @@
 
 
 def index():
-    """
-    example action using the internationalization operator T and flash
-    rendered by views/default/index.html or views/generic.html
+    form = SQLFORM.factory(
+        Field('ingr1', label=T('First ingredient'), default='Garlic'),
+        Field('ingr2', label='Second ingredient')
+    )
+    if form.process().accepted:
+        db.compatible.insert(
+            ingredient1 = form.vars.ingr1.lower(),
+            ingredient2 = form.vars.ingr2.lower()
+        )
+        redirect(URL('default', 'index'))
+    return dict(form=form)
 
-    if you need a simple wiki simply replace the two lines below with:
-    return auth.wiki()
-    """
-    response.flash = T("Hello World")
-    return dict(message=T('Welcome to web2py!'))
+
+def put_lowercase(row_id):
+    return A(
+        'Make lowercase',
+        _href=URL('default', 'tolower', args=[row_id]),
+        _class='btn rounded orange',
+    )
+
+def tolower():
+    row = db.compatible(request.args(0))
+    if row is not None:
+        row.ingredient1 = row.ingredient1.lower()
+        row.ingredient2 = row.ingredient2.lower()
+        row.update_record()
+    redirect(URL('default', 'view'))
+
+
+def view():
+    q = (db.compatible.id > 0)
+    # q = (db.compatible.ingredient1 == "Garlic")
+    grid = SQLFORM.grid(q,
+        fields=[db.compatible.ingredient1, db.compatible.ingredient2],
+        details = False,
+        csv=False, create=True, editable=True, deletable=False, searchable=True,
+        links=[lambda r: put_lowercase(r.id)],
+        sortable=True,
+        maxtextlength=24,
+        )
+    return dict(grid=grid)
+
 
 
 def user():
