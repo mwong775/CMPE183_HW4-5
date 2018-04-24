@@ -35,6 +35,13 @@
         </table>
       </div>
 
+      <div>
+        <button v-on:click="toggle_plus">
+          <i v-if="is_plus" class="fa fa-plus"></i>
+          <i v-if="!is_plus" class="fa fa-minus"></i>
+        </button>
+      </div>
+
     </div>
 
 </div>

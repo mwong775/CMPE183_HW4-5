@@ -19,6 +19,16 @@ var app = function() {
     var bird = {id: 3, name: 'bird', 'paws': 2};
     var animal_list = [dog, cat, bird];
 
+    self.mydog = {
+        name: 'Bob',
+        age: 37,
+        color: 'brown'
+    };
+
+    self.toggle_plus = function () {
+        self.vue.is_plus = !self.vue.is_plus;
+    };
+
     // Complete as needed.
     self.vue = new Vue({
         el: "#vue-div",
@@ -27,9 +37,11 @@ var app = function() {
         data: {
             salutation: 'hello',
             thing_list: ['duck', 'cat', 'cow', 'donkey'],
-            animal_list: animal_list
+            animal_list: animal_list,
+            is_plus: true
         },
         methods: {
+            toggle_plus: self.toggle_plus
         }
     });
 
