@@ -13,6 +13,12 @@ var app = function() {
         }
     };
 
+    // Some animals.
+    var dog = {id: 1, name: 'dog', 'paws': 4};
+    var cat = {id: 2, name: 'cat', 'paws': 4};
+    var bird = {id: 3, name: 'bird', 'paws': 2};
+    var animal_list = [dog, cat, bird];
+
     // Complete as needed.
     self.vue = new Vue({
         el: "#vue-div",
@@ -20,7 +26,8 @@ var app = function() {
         unsafeDelimiters: ['!{', '}'],
         data: {
             salutation: 'hello',
-            thing_list: ['duck', 'cat', 'cow', 'donkey']
+            thing_list: ['duck', 'cat', 'cow', 'donkey'],
+            animal_list: animal_list
         },
         methods: {
         }
