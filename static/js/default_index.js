@@ -13,29 +13,25 @@ var app = function() {
         }
     };
 
-    // Some animals.
-    var dog = {id: 1, name: 'dog', 'paws': 4};
-    var cat = {id: 2, name: 'cat', 'paws': 4};
-    var bird = {id: 3, name: 'bird', 'paws': 2};
-    var animal_list = [dog, cat, bird];
-
-    self.mydog = {
-        name: 'Bob',
-        age: 37,
-        color: 'brown'
-    };
-
     self.counter = 0;
 
     self.toggle_plus = function () {
         if (self.vue.is_plus) {
             self.vue.thing_list.push("" + self.counter);
             self.counter += 1;
-        } else {
-            // Minus
-            self.vue.thing_list[2] = 'whale';
         }
         self.vue.is_plus = !self.vue.is_plus;
+    };
+
+    self.get_initial_data = function () {
+        // The URL is initial_data_url
+        $.getJSON(
+            initial_data_url,
+            function (data) {
+                self.vue.animal_list = data.animals;
+                self.vue.thing_list = data.things;
+            }
+            );
     };
 
     // Complete as needed.
@@ -45,14 +41,16 @@ var app = function() {
         unsafeDelimiters: ['!{', '}'],
         data: {
             salutation: 'hello',
-            thing_list: ['duck', 'cat', 'cow', 'donkey'],
-            animal_list: animal_list,
+            thing_list: [],
+            animal_list: [],
             is_plus: true
         },
         methods: {
             toggle_plus: self.toggle_plus
         }
     });
+
+    self.get_initial_data();
 
     return self;
 };

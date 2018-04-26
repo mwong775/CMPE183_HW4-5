@@ -3,7 +3,7 @@
 {{block head}}
 <script src="{{=URL('static', 'js/vue.js')}}"></script>
 <script>
-    var my_url = "{{=URL('api', 'my_method')}}";
+    var initial_data_url = "{{=URL('api', 'get_initial_data')}}";
 </script>
 {{end}}
 
@@ -21,20 +21,7 @@
           <li v-for="thing in thing_list">${thing}</li>
         </ul>
       </div>
-
-      <div>
-        <table>
-          <tr>
-            <th>Animal</th>
-            <th>Paws</th>
-          </tr>
-          <tr v-for="a in animal_list">
-            <td>${a.name}</td>
-            <td>${a.paws}</td>
-          </tr>
-        </table>
-      </div>
-
+      
       <div>
         <button v-on:click="toggle_plus">
           <i v-if="is_plus" class="fa fa-plus"></i>
