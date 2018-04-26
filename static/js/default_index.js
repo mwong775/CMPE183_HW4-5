@@ -25,7 +25,16 @@ var app = function() {
         color: 'brown'
     };
 
+    self.counter = 0;
+
     self.toggle_plus = function () {
+        if (self.vue.is_plus) {
+            self.vue.thing_list.push("" + self.counter);
+            self.counter += 1;
+        } else {
+            // Minus
+            self.vue.thing_list[2] = 'whale';
+        }
         self.vue.is_plus = !self.vue.is_plus;
     };
 
