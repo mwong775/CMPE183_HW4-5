@@ -14,10 +14,18 @@ var app = function() {
     };
 
     self.edit_toggle = function (is_edit) {
-        self.vue.is_editing = is_edit;
-        if (!is_edit) {
+        if (is_edit) {
+            self.vue.is_editing = true;
+        } else {
             // Save the value, e.g. sending it to the server.
             console.log("The user saved value " + self.vue.my_string);
+            self.vue.save_pending = true;
+            $.post(edit_url,
+                {my_string: self.vue.my_string},
+                function (data) {
+                    self.vue.save_pending = false;
+                    self.vue.is_editing = false;
+                });
         }
     };
 
@@ -28,7 +36,8 @@ var app = function() {
         unsafeDelimiters: ['!{', '}'],
         data: {
             my_string: "Some initial string",
-            is_editing: false
+            is_editing: false,
+            save_pending: false
         },
         methods: {
             edit_toggle: self.edit_toggle
