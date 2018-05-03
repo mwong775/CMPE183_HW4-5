@@ -11,6 +11,15 @@
 
     <div id="vue-div" class="display:none">
         <!-- Your code goes here.  Remember to call $("#vue-div").show() once you get the data for the first time. -->
+
+      <div>
+        <div v-if="!is_editing" v-on:click="edit_toggle(true)">${my_string}</div>
+        <div v-if="is_editing">
+          <input v-model="my_string" placeholder="Your string"/>
+          <button class="btn rounded" v-on:click="edit_toggle(false)">Save</button>
+        </div>
+      </div>
+
     </div>
 
 </div>

@@ -13,14 +13,25 @@ var app = function() {
         }
     };
 
+    self.edit_toggle = function (is_edit) {
+        self.vue.is_editing = is_edit;
+        if (!is_edit) {
+            // Save the value, e.g. sending it to the server.
+            console.log("The user saved value " + self.vue.my_string);
+        }
+    };
+
     // Complete as needed.
     self.vue = new Vue({
         el: "#vue-div",
         delimiters: ['${', '}'],
         unsafeDelimiters: ['!{', '}'],
         data: {
+            my_string: "Some initial string",
+            is_editing: false
         },
         methods: {
+            edit_toggle: self.edit_toggle
         }
 
     });
