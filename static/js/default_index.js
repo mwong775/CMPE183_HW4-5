@@ -16,18 +16,24 @@ var app = function() {
     self.edit_toggle = function (is_edit) {
         if (is_edit) {
             self.vue.is_editing = true;
+            // Save the string using jQuery.
+            $("div#my_output").prepend("<p>" + self.vue.my_string + "</p>");
         } else {
             // Save the value, e.g. sending it to the server.
             console.log("The user saved value " + self.vue.my_string);
             self.vue.save_pending = true;
+            // Use jQuery to make the status red.
+            $("div#my_div").addClass("red").show();
             $.post(edit_url,
                 {my_string: self.vue.my_string},
                 function (data) {
                     self.vue.save_pending = false;
                     self.vue.is_editing = false;
+                    $("div#my_div").hide();
                 });
         }
     };
+
 
     // Complete as needed.
     self.vue = new Vue({
