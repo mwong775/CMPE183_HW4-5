@@ -15,7 +15,7 @@ from gluon.utils import web2py_uuid
 def build_track_url(i):
     return URL('api', 'play_track', vars=dict(track_id=i), user_signature=True)
 
-@auth.requires_signature()
+@auth.requires_signature(hash_vars=False)
 def get_tracks():
     start_idx = int(request.vars.start_idx) if request.vars.start_idx is not None else 0
     end_idx = int(request.vars.end_idx) if request.vars.end_idx is not None else 0
@@ -30,6 +30,7 @@ def get_tracks():
                 album = r.album,
                 title = r.title,
                 num_plays = r.num_plays,
+                favorite = r.favorite,
                 track_url =  build_track_url(r.id),
             )
             tracks.append(t)
@@ -71,8 +72,16 @@ def add_track():
         album = request.vars.album,
         title = request.vars.title,
         num_plays = 0,
+        favorite = False,
         track_url = build_track_url(t_id)
     )))
+
+@auth.requires_signature()
+def toggle_favorite():
+    """Toggles the favorite of a track."""
+    t = db.track(request.vars.track_id)
+    t.update_record(favorite = not t.favorite)
+    return "ok"
 
 @auth.requires_signature()
 def del_track():

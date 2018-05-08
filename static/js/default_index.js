@@ -23,7 +23,7 @@ var app = function() {
             start_idx: start_idx,
             end_idx: end_idx
         };
-        return tracks_url + "?" + $.param(pp);
+        return tracks_url + "&" + $.param(pp);
     }
 
     self.get_tracks = function () {
@@ -129,6 +129,14 @@ var app = function() {
         )
     };
 
+    self.toggle_favorite = function (track_idx) {
+        var track = self.vue.tracks[track_idx];
+        track.favorite = !track.favorite;
+        $.post(toggle_favorite_url,
+            {track_id: track.id},
+            function () {}
+            )
+    };
 
     self.vue = new Vue({
         el: "#vue-div",
@@ -151,7 +159,8 @@ var app = function() {
             add_track: self.add_track,
             delete_track: self.delete_track,
             select_track: self.select_track,
-            cancel_add_track: self.cancel_add_track
+            cancel_add_track: self.cancel_add_track,
+            toggle_favorite: self.toggle_favorite
         }
 
     });

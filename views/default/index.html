@@ -4,7 +4,7 @@
 
 <script src="{{=URL('static', 'js/vue.js')}}"></script>
 <script>
-  var tracks_url = "{{=URL('api', 'get_tracks')}}";
+  var tracks_url = "{{=URL('api', 'get_tracks', user_signature=True, hash_vars=False)}}";
   var add_track_url = "{{=URL('api', 'add_track', user_signature=True)}}";
   var del_track_url = "{{=URL('api', 'del_track', user_signature=True)}}";
   var upload_url = "{{=URL('api', 'upload_track', user_signature=True)}}";
@@ -12,6 +12,7 @@
   var inc_plays_url = "{{=URL('api', 'inc_plays', user_signature=True)}}";
   var get_insertion_id_url = "{{=URL('api', 'get_insertion_id', user_signature=True)}}";
   var cleanup_url = "{{=URL('api', 'cleanup', user_signature=True)}}";
+  var toggle_favorite_url = "{{=URL('api', 'toggle_favorite', user_signature=True)}}"
 </script>
 
 <script src="{{=URL('static', 'js/dropzone.js')}}"></script>
@@ -114,6 +115,7 @@ $(function() {
           <th>Artist</th>
           <th>Album</th>
           <th>Track</th>
+          <th></th>
           <th>N Plays</th>
           <th></th>
         </tr>
@@ -124,6 +126,10 @@ $(function() {
           <td>${track.artist}</td>
           <td>${track.album}</td>
           <td>${track.title}</td>
+          <td>
+            <i v-if="track.favorite"  v-on:click="toggle_favorite(track._idx)" class="fa fa-heart"></i>
+            <i v-if="!track.favorite" v-on:click="toggle_favorite(track._idx)" class="fa fa-heart-o"></i>
+          </td>
           <td>${track.num_plays}</td>
           <td><i class="fa fa-trash-o" v-on:click="delete_track(track._idx)"></i></td>
         </tr>
