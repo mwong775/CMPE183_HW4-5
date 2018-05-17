@@ -1,7 +1,7 @@
 import requests
 import time
 
-API_URL = "http://upload-dot-luca-teaching.appspot.com/start/uploader/get_upload_url"
+API_URL = "https://upload-dot-luca-teaching.appspot.com/start/uploader/get_upload_url"
 
 IMG_FILE = "IMG_0542.JPG"
 
