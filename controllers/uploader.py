@@ -82,9 +82,10 @@ def get_upload_url():
     - download_url: used for retrieving the content"""
     # Invents a random name for the image.
     image_path = BUCKET_NAME + web2py_uuid() + ".jpg"
-    signed_url = gcs_url(image_path, verb='PUT', content_type='image/jpeg')
-    access_url = GCS_API_ENDPOINT + image_path
+    signed_put_url = gcs_url(image_path, verb='PUT', content_type='image/jpeg')
+    signed_get_url = gcs_url(image_path, verb='GET',
+                             expiration_secs=3600 * 24 * 365)
     return response.json(dict(
-        signed_url=signed_url,
-        access_url=access_url
+        signed_url=signed_put_url,
+        access_url=signed_get_url
     ))
