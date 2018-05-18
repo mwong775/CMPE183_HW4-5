@@ -85,6 +85,8 @@ def get_upload_url():
     signed_put_url = gcs_url(image_path, verb='PUT', content_type='image/jpeg')
     signed_get_url = gcs_url(image_path, verb='GET',
                              expiration_secs=3600 * 24 * 365)
+    # This line is required; otherwise, cross-domain requests are not accepted.
+    response.headers['Access-Control-Allow-Origin'] = '*'
     return response.json(dict(
         signed_url=signed_put_url,
         access_url=signed_get_url
