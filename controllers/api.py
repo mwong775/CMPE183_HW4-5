@@ -26,10 +26,7 @@ def register():
         token = token,
     )
     # Creates the cookie.
-    response.cookies['myapp'] = token
-    response.cookies['myapp']['path'] = '/' # Valid in all the app
-    response.cookies['myapp']['expires'] = 24 * 3600
-    return response.json(dict(result='created'))
+    return response.json(dict(result='created', token=token))
 
 def login():
     response.headers['Access-Control-Allow-Origin'] = '*'
@@ -44,17 +41,11 @@ def login():
     # Creates a new token.
     token = web2py_uuid()
     r.update_record(token = token)
-    # Puts it in the cookie.
-    response.cookies['myapp'] = token
-    response.cookies['myapp']['path'] = '/' # Valid in all the app
-    response.cookies['myapp']['expires'] = 24 * 3600
-    response.cookies['myapp']['secure'] = False # For testing only.
-    return response.json(dict(result='logged in'))
+    return response.json(dict(result='logged in', token=token))
 
 def logout():
     response.headers['Access-Control-Allow-Origin'] = '*'
-    response.cookies['myapp'] = None
-    return response.json(dict(result='logged out'))
+    return response.json(dict(result='logged out', token=None))
 
 
 

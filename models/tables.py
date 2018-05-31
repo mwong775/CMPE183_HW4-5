@@ -20,14 +20,11 @@ session._secure = False
 
 # Gets the identity of the logged in user.
 logged_in_user = None
-if request.cookies.has_key('myapp'):
-    cookie = request.cookies['myapp'].value
-    logger.info("Cookie: %r" % cookie)
-    if cookie is not None:
-        r = db(db.myuser.token == cookie).first()
-        if r is not None:
-            logged_in_user = dict(
-                id = r.id,
-                name = r.username
-            )
+if request.vars.token is not None:
+    r = db(db.myuser.token == request.vars.token).select().first()
+    if r is not None:
+        logged_in_user = dict(
+            username = r.username
+        )
+        logger.info("User: %r" % r.username)
 
