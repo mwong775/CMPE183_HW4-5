@@ -15,9 +15,6 @@ db.define_table('myuser',
                 Field('token'),
                 )
 
-# For testing ONLY, so we can use insecure tokens.
-session._secure = False
-
 # Gets the identity of the logged in user.
 logged_in_user = None
 if request.vars.token is not None:

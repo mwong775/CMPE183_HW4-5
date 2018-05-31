@@ -36,15 +36,21 @@ def login():
     r = db((db.myuser.username == username) &
            (db.myuser.password == h.hexdigest())).select().first()
     if r is None:
-        response.cookies['myapp'] = None
         return response.json(dict(result='fail'))
-    # Creates a new token.
-    token = web2py_uuid()
-    r.update_record(token = token)
+    # Creates a new token if needed.
+    if r.token is None:
+        token = web2py_uuid()
+        r.update_record(token = token)
+    else:
+        token = r.token
     return response.json(dict(result='logged in', token=token))
 
 def logout():
     response.headers['Access-Control-Allow-Origin'] = '*'
+    r = db((db.myuser.username == username) &
+           (db.myuser.password == h.hexdigest())).select().first()
+    if r is None:
+        r.update_record(token=None)
     return response.json(dict(result='logged out', token=None))
 
 
