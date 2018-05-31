@@ -8,3 +8,4 @@ uploads/*
 .sass-cache
 .sass-cache/*
 
+gcs_keys.json
