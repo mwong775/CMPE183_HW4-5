@@ -47,11 +47,13 @@ def login():
 
 def logout():
     response.headers['Access-Control-Allow-Origin'] = '*'
-    r = db((db.myuser.username == username) &
-           (db.myuser.password == h.hexdigest())).select().first()
-    if r is None:
-        r.update_record(token=None)
-    return response.json(dict(result='logged out', token=None))
+    logger.info("The user trying to logout is: %r" % logged_in_user)
+    if logged_in_user is not None:
+        r = db((db.myuser.username == logged_in_user['username'])).select().first()
+        if r is None:
+            r.update_record(token=None)
+        return response.json(dict(result='logged out', token=None))
+    return response.json(dict(result='who are you?', token=None))
 
 
 
