@@ -8,6 +8,7 @@
 # - download is for downloading files uploaded in the db (does streaming)
 # -------------------------------------------------------------------------
 
+import datetime
 
 def index():
     """
@@ -17,8 +18,17 @@ def index():
     if you need a simple wiki simply replace the two lines below with:
     return auth.wiki()
     """
-    response.flash = T("Hello World")
-    return dict(message=T('Welcome to web2py!'))
+
+    if session.c is None:
+        session.c = 1
+    else:
+        session.c += 1
+
+    return dict(
+        message=T('Welcome to web2py!'),
+        ctime=datetime.datetime.now().isoformat(),
+        visit_count=session.c,
+    )
 
 
 def user():
