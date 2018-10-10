@@ -30,6 +30,9 @@ def index():
         visit_count=session.c,
     )
 
+def add():
+    return dict()
+
 
 def user():
     """
