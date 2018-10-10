@@ -5,16 +5,13 @@
 
 <div class="main_content">
 
-  <h1>This is our first page</h1>
-  <p>
-    My message is: {{=message}}
-  </p>
+  {{if auth.user is None:}}
 
-  <p>
-    The current time is: {{=ctime}}
-  </p>
-  <p>
-    And you have visited {{=visit_count}} times.
-  </p>
+  <p>You are not logged in</p>
+
+  {{else:}}
+    <p>You are logged in</p>
+  {{pass}}
+
 </div>
 
