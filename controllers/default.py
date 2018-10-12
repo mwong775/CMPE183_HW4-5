@@ -30,9 +30,41 @@ def index():
         visit_count=session.c,
     )
 
-def add():
-    return dict()
+def add1():
+    """Very simple way to insert records."""
+    logger.info("Request method: %r", request.env.request_method)
+    if request.env.request_method == 'POST':
+        # This is a postback.  Insert the record.
+        logger.info("We are inserting: title: %r content: %r" % (
+            request.vars.post_title, request.vars.post_content
+        ))
+        db.post.insert(
+            post_title=request.vars.post_title,
+            post_content=request.vars.post_content
+        )
+        redirect(URL('default', 'index'))
+    else:
+        # This is a GET request.  Returns the form.
+        return dict()
 
+def add2():
+    """More sophisticated way, in which we use web2py to come up with the form."""
+    form = SQLFORM.factory(
+        Field('post_title', _hint='Post Title'),
+        Field('post_content', 'text'),
+    )
+    # We can process the form.  This will check that the request is a POST,
+    # and also perform validation, but in this case there is no validation.
+    if form.process().accepted:
+        # We insert the result, as in add1.
+        db.post.insert(
+            post_title=request.vars.post_title,
+            post_content=request.vars.post_content
+        )
+        # And we load default/index via redirect.
+        redirect(URL('default', 'index'))
+    # We ask web2py to lay out the form for us.
+    return dict(form=form)
 
 def user():
     """
