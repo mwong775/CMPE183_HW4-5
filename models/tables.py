@@ -18,12 +18,13 @@ def get_current_time():
     return datetime.datetime.utcnow()
 
 db.define_table('post',
+                Field('post_author', default=get_user_email()),
                 Field('post_title'),
                 Field('post_content', 'text'),
                 Field('post_time', 'datetime', update=get_current_time()),
-                Field('post_author', default=get_user_email()),
                 )
 
-
+db.post.post_time.readable = db.post.post_time.writable = False
+db.post.post_author.writable = False
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)

@@ -19,8 +19,17 @@
       <a href="{{=URL('default', 'add2')}}" class="btn">Add Post (method 2)</a>
     </p>
     <p>
-      <a href="{{=URL('default', 'add3')}}" class="btn">Add Post (method 3)</a>
+      {{=A('Add Post (method 3)', _href=URL('default', 'add3'), _class='btn')}}
     </p>
+  {{pass}}
+
+  {{for r in rows:}}
+  <div>
+    <p>Author: {{=r.post_author}}</p>
+    <p>Title: {{=r.post_title}}</p>
+    <p>Content: {{=r.post_content}}</p>
+  </div>
+
   {{pass}}
 
 </div>
