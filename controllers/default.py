@@ -34,7 +34,9 @@ def index():
     )
 
 
+@auth.requires_login()
 def add1():
+    """INSECURE -- form does not contain token -- do not use."""
     """Very simple way to insert records."""
     logger.info("Request method: %r", request.env.request_method)
     if request.env.request_method == 'POST':
@@ -54,6 +56,7 @@ def add1():
         return dict()
 
 
+@auth.requires_login()
 def add2():
     """More sophisticated way, in which we use web2py to come up with the form."""
     form = SQLFORM.factory(
@@ -75,6 +78,7 @@ def add2():
     return dict(form=form)
 
 
+@auth.requires_login()
 def add3():
     """More sophisticated way, in which we use web2py to come up with the form."""
     form = SQLFORM(db.post)
@@ -92,6 +96,74 @@ def add3():
     # We ask web2py to lay out the form for us.
     logger.info("My session is: %r" % session)
     return dict(form=form)
+
+
+# We require login.
+@auth.requires_login()
+def edit():
+    """Allows editing of a post.  URL form: /default/edit/<n> where n is the post id."""
+
+    # if len(request.args) == 0:
+    #     raise HTTP(500)
+    # try:
+    #     int_id = int(request.args[0])
+    # except:
+    #     raise HTTP(500)
+    # rows = db(db.post.id == int_id).select()
+    # for r in rows:
+    #     post = r
+    #     break
+    # # Now we have post.
+
+    # For this controller only, we hide the author.
+    db.post.post_author.readable = False
+
+    post = db.post(request.args(0))
+    # We must validate everything we receive.
+    if post is None:
+        logging.info("Invalid edit call")
+        redirect(URL('default', 'index'))
+    # One can edit only one's own posts.
+    if post.post_author != auth.user.email:
+        logging.info("Attempt to edit some one else's post by: %r" % auth.user.email)
+        redirect(URL('default', 'index'))
+    # Now we must generate a form that allows editing the post.
+    form = SQLFORM(db.post, record=post)
+    if form.process().accepted:
+        # The deed is done.
+        redirect(URL('default', 'index'))
+    return dict(form=form)
+
+
+@auth.requires_signature()
+@auth.requires_login()
+def delete():
+    post = db.post(request.args(0))
+    # We must validate everything we receive.
+    if post is None:
+        logging.info("Invalid edit call")
+        redirect(URL('default', 'index'))
+    # One can edit only one's own posts.
+    if post.post_author != auth.user.email:
+        logging.info("Attempt to edit some one else's post by: %r" % auth.user.email)
+        redirect(URL('default', 'index'))
+    db(db.post.id == post.id).delete()
+    redirect(URL('default', 'index'))
+
+
+# @auth.requires_login()
+# def edit1():
+#     post_id = request.vars.id # This matches the vars=dict(id=...) in index.html
+#     post = db.post(post_id)
+#     # We must validate everything we receive.
+#     if post is None:
+#         logging.info("Invalid edit call")
+#         redirect(URL('default', 'index'))
+#     form = SQLFORM.factory(
+#         Field('post_title'),
+#         Field('post_content', 'text'),
+#     )
+
 
 
 

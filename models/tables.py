@@ -26,5 +26,6 @@ db.define_table('post',
 
 db.post.post_time.readable = db.post.post_time.writable = False
 db.post.post_author.writable = False
+db.post.id.readable = False
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
