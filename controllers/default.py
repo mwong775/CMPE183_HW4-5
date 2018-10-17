@@ -26,12 +26,44 @@ def index():
 
     rows = db(db.post.id > 0).select()
 
+
+
     return dict(
         message=T('Welcome to web2py!'),
         ctime=datetime.datetime.now().isoformat(),
         visit_count=session.c,
         rows=rows,
     )
+
+def index_inefficient():
+    """
+    example action using the internationalization operator T and flash
+    rendered by views/default/index.html or views/generic.html
+
+    if you need a simple wiki simply replace the two lines below with:
+    return auth.wiki()
+    """
+
+    if session.c is None:
+        session.c = 1
+    else:
+        session.c += 1
+
+    rows = db(db.post.id > 0).select()
+
+    result = []
+    for r in rows:
+        starred = (False if auth.user is None else
+            db((db.star.post_id == r.id) & (db.star.user_id == auth.user.id)).select().first() is not None)
+        result.append(dict(
+            post_title=r.post_title,
+            post_author=r.post_author,
+            post_content=r.post_content,
+            starred=starred,
+            id=r.id,
+        ))
+    logger.info("Result: %r" % result)
+    return dict(rows=result)
 
 
 @auth.requires_login()

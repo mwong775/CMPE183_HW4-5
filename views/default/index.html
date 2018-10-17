@@ -22,9 +22,10 @@
     <div class="content">Content: {{=r.post_content}}</div>
     <div class="button_row">
     {{if auth.user is not None and auth.user.email == r.post_author:}}
-      {{=A('Edit', _href=URL('default', 'edit', args=[r.id]), _class='btn')}}
+      <a href="{{=URL('default', 'edit', args=[r.id])}}", class="btn"><i class="fa fa-pencil-square-o"></i> Edit</a>
       {{=A('Edit', _href=URL('default', 'edit1', vars=dict(id=r.id)), _class='btn')}}
       {{=A('Delete Immediately', _href=URL('default', 'delete', args=[r.id], user_signature=True), _class='btn')}}
+      <a><i class="fa fa-star-o"></i></a>
     {{pass}}
     </div>
   </div>

@@ -29,3 +29,10 @@ db.post.post_author.writable = False
 db.post.id.readable = False
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
+
+# Stars
+
+db.define_table('star',
+                Field('user_id', 'reference auth_user'), # The user who starred
+                Field('post_id', 'reference post'), # The starred post
+                )
