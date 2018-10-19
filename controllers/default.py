@@ -24,7 +24,7 @@ def index():
         for reply in replies:
             reply_list.append(dict(
                 reply_id = reply.id,
-                reply_author = reply.user_email,
+                reply_author = reply.reply_author,
                 reply_content = reply.reply_content,
             ))
 

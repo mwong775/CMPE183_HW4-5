@@ -36,11 +36,11 @@
           <div class="reply_content">Content: {{=reply['reply_content']}}</div>
           {{if auth.user is not None and auth.user.email == reply['reply_author']:}}
             <div class="reply options">
-              <a href="{{=URL('default', 'edit_reply', args=[r['reply_id']], user_signature=True)}}" class="btn">
+              <a href="{{=URL('default', 'edit_reply', args=[reply['reply_id']], user_signature=True)}}" class="btn">
                 <i class="fa fa-pencil-square-o"></i> Edit
               </a>
-              <a href="{{=URL('default', 'delete_reply', args=[r['reply_id']], user_signature=True)}}" class="btn">
-                <i class="fa fa-trash-o"></i> Edit
+              <a href="{{=URL('default', 'delete_reply', args=[reply['reply_id']], user_signature=True)}}" class="btn">
+                <i class="fa fa-trash-o"></i> Delete
               </a>
             </div>
           {{pass}}
