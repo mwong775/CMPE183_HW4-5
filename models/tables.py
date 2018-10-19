@@ -36,3 +36,11 @@ db.define_table('star',
                 Field('user_id', 'reference auth_user'), # The user who starred
                 Field('post_id', 'reference post'), # The starred post
                 )
+
+# Thumbs
+
+db.define_table('thumb',
+                Field('user_email'), # The user who thumbed, easier to just write the email here.
+                Field('post_id', 'reference post'), # The thumbed post
+                Field('thumb_state'), # This can be 'u' for up or 'd' for down, or None for... None.
+                )

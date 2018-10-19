@@ -5,6 +5,10 @@ div.main_content {
     border: 2px solid black;
     background-color: $verylightgray;
     margin: 10px;
+
+    div.thumb_div {
+      margin: 5px;
+    }
   }
 
 }

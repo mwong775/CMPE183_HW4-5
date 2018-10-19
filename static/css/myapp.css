@@ -8,3 +8,7 @@ div.main_content div.post {
   background-color: #dddddd;
   margin: 10px;
 }
+/* line 9, ../sass/_main.scss */
+div.main_content div.post div.thumb_div {
+  margin: 5px;
+}

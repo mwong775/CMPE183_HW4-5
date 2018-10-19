@@ -11,7 +11,7 @@
 import datetime
 
 
-def index2():
+def index_with_many_queries():
     rows = db(db.post.id > 0).select()
     result = []
     for r in rows:
@@ -65,6 +65,104 @@ def index():
     return dict(rows=result)
 
 
+def index_thumbs():
+    result = [] # We will accummulate the result here.
+    if auth.user is None:
+        # We cannot give information on stars; we can simply give out a list of posts.
+        for r in db(db.post.id > 0).select():
+            result.append(dict(
+                post_title=r.post_title,
+                post_author=r.post_author,
+                post_content=r.post_content,
+                starred=False, # The button bar in any case should not be displayed if one is not logged in.
+                id=r.id,
+            ))
+    else:
+        # The user is logged in.  In this case, we can pull out of the db also the stars.
+        # To understand this version of the code, please see
+        # http://www.web2py.com/books/default/chapter/29/06/the-database-abstraction-layer#One-to-many-relation
+        # We are doing a "left outer join", because some posts may not be starred.
+        rows = db().select(db.post.ALL, db.star.ALL,
+                           left=db.star.on(
+                               (db.post.id == db.star.post_id) & # The star has to be for the post
+                               (db.star.user_id == auth.user.id) # And it must be from the logged in user.
+                           ))
+        for r in rows:
+            # I need to get from the DB two additional things.
+            # First, I want the list of people who thumbed it up/down.
+            # Then, I also want to know if I (the logged in user) thumbed it up/down.
+            thumb_rows = db(db.thumb.post_id == r.post.id).select()
+            thumb_ups = []
+            thumb_downs = []
+            my_thumb = None
+            for thumb_row in thumb_rows:
+                # I am iterating on the thumbings for this particular post.
+                if thumb_row.thumb_state == 'u':
+                    thumb_ups.append(thumb_row.user_email)
+                elif thumb_row.thumb_state == 'd':
+                    thumb_downs.append(thumb_row.user_email)
+                if thumb_row.user_email == auth.user.email:
+                    my_thumb = thumb_row.thumb_state
+            # Notice that here we avoid doing one query for each row.
+            # We already know whether things are starred or not.
+            result.append(dict(
+                post_title=r.post.post_title, # Notice how we have to say r.post.post_title rather than r.post_title.
+                post_author=r.post.post_author,
+                post_content=r.post.post_content,
+                starred=r.star.id is not None, # It does not matter here which field of star we check for existence.
+                liked=thumb_ups,
+                disliked=thumb_downs,
+                my_thumb=my_thumb,
+                id=r.post.id, # This is the id of the post, as before.
+            ))
+    logger.info("Result: %r" % result)
+    return dict(rows=result)
+
+
+@auth.requires_signature()
+@auth.requires_login()
+def thumb():
+    post_id = int(request.args[0])
+    # Let's use the "update_or_insert" database method, so our code will be more compact.
+    # See http://www.web2py.com/books/default/chapter/29/06/the-database-abstraction-layer#update_or_insert
+    db.thumb.update_or_insert(
+        (db.thumb.post_id == post_id) & (db.thumb.user_email == auth.user.email), # Query
+        post_id=post_id, # And fields.
+        user_email=auth.user.email,
+        thumb_state=request.args[1]
+    )
+    # That's it; the deed is done.
+    redirect(request.vars.next)
+
+
+@auth.requires_signature()
+@auth.requires_login()
+def thumb_unthumb():
+    """In this version of the code, clicking on an already clicked thumb deletes it."""
+    post_id = int(request.args[0])
+    thumb_record = db((db.thumb.post_id == int(request.args[0])) &
+                      (db.thumb.user_email == auth.user.email)).select().first()
+    new_state = request.args[1]
+    if thumb_record is None:
+        # We insert the new state.
+        db.thumb.insert(
+            user_email=auth.user.email,
+            post_id=post_id,
+            thumb_state=new_state,
+        )
+    else:
+        if thumb_record.thumb_state == new_state:
+            # Two clicks deletes the thumb. For delete_record, see
+            # See http://www.web2py.com/books/default/chapter/29/06/the-database-abstraction-layer#select
+            thumb_record.delete_record()
+        else:
+            # We update the record;
+            # see http://www.web2py.com/books/default/chapter/29/06/the-database-abstraction-layer#update_record
+            thumb_record.update_record(thumb_state=new_state)
+    # That's it; the deed is done.
+    redirect(request.vars.next)
+
+
 @auth.requires_signature()
 @auth.requires_login()
 def toggle_star():
@@ -78,7 +176,7 @@ def toggle_star():
         db.star.insert(
             user_id = auth.user.id,
             post_id = int(request.args[0]))
-    redirect(URL('default', 'index'))
+    redirect(request.vars.next) # Notice that now it's the request that tells us where to go next.
 
 
 @auth.requires_login()

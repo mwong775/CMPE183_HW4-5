@@ -29,9 +29,9 @@
 
     {{if auth.user is not None:}}
     {{if r['starred']:}}
-      <a href="{{=URL('default', 'toggle_star', args=r['id'], user_signature=True)}}"><i class="fa fa-star"></i></a>
+      <a href="{{=URL('default', 'toggle_star', args=r['id'], vars=dict(next=URL('default', 'index')), user_signature=True)}}"><i class="fa fa-star"></i></a>
     {{else:}}
-      <a href="{{=URL('default', 'toggle_star', args=r['id'], user_signature=True)}}"><i class="fa fa-star-o"></i></a>
+      <a href="{{=URL('default', 'toggle_star', args=r['id'], vars=dict(next=URL('default', 'index')), user_signature=True)}}"><i class="fa fa-star-o"></i></a>
     {{pass}}{{pass}}
     </div>
   </div>
