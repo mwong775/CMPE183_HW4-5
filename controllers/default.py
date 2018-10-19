@@ -10,45 +10,9 @@
 
 import datetime
 
-def index():
-    """
-    example action using the internationalization operator T and flash
-    rendered by views/default/index.html or views/generic.html
 
-    if you need a simple wiki simply replace the two lines below with:
-    return auth.wiki()
-    """
-
-    if session.c is None:
-        session.c = 1
-    else:
-        session.c += 1
-
+def index2():
     rows = db(db.post.id > 0).select()
-
-    return dict(
-        message=T('Welcome to web2py!'),
-        ctime=datetime.datetime.now().isoformat(),
-        visit_count=session.c,
-        rows=rows,
-    )
-
-def index_inefficient():
-    """
-    example action using the internationalization operator T and flash
-    rendered by views/default/index.html or views/generic.html
-
-    if you need a simple wiki simply replace the two lines below with:
-    return auth.wiki()
-    """
-
-    if session.c is None:
-        session.c = 1
-    else:
-        session.c += 1
-
-    rows = db(db.post.id > 0).select()
-
     result = []
     for r in rows:
         starred = (False if auth.user is None else
@@ -60,6 +24,43 @@ def index_inefficient():
             starred=starred,
             id=r.id,
         ))
+    logger.info("Result: %r" % result)
+    return dict(rows=result)
+
+
+def index():
+    result = [] # We will accummulate the result here.
+    if auth.user is None:
+        # We cannot give information on stars; we can simply give out a list of posts.
+        for r in db(db.post.id > 0).select():
+            result.append(dict(
+                post_title=r.post_title,
+                post_author=r.post_author,
+                post_content=r.post_content,
+                starred=False, # The button bar in any case should not be displayed if one is not logged in.
+                id=r.id,
+            ))
+    else:
+        # The user is logged in.  In this case, we can pull out of the db also the stars.
+        # To understand this version of the code, please see
+        # http://www.web2py.com/books/default/chapter/29/06/the-database-abstraction-layer#One-to-many-relation
+        # We are doing a "left outer join", because some posts may not be starred.
+        rows = db().select(db.post.ALL, db.star.ALL,
+                           left=db.star.on(
+                               (db.post.id == db.star.post_id) & # The star has to be for the post
+                               (db.star.user_id == auth.user.id) # And it must be from the logged in user.
+                           ))
+
+        for r in rows:
+            # Notice that here we avoid doing one query for each row.
+            # We already know whether things are starred or not.
+            result.append(dict(
+                post_title=r.post.post_title, # Notice how we have to say r.post.post_title rather than r.post_title.
+                post_author=r.post.post_author,
+                post_content=r.post.post_content,
+                starred=r.star.id is not None, # It does not matter here which field of star we check for existence.
+                id=r.post.id, # This is the id of the post, as before.
+            ))
     logger.info("Result: %r" % result)
     return dict(rows=result)
 
@@ -77,7 +78,7 @@ def toggle_star():
         db.star.insert(
             user_id = auth.user.id,
             post_id = int(request.args[0]))
-    redirect(URL('default', 'index_inefficient'))
+    redirect(URL('default', 'index'))
 
 
 @auth.requires_login()
