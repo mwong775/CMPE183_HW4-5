@@ -26,8 +26,6 @@ def index():
 
     rows = db(db.post.id > 0).select()
 
-
-
     return dict(
         message=T('Welcome to web2py!'),
         ctime=datetime.datetime.now().isoformat(),
@@ -64,6 +62,22 @@ def index_inefficient():
         ))
     logger.info("Result: %r" % result)
     return dict(rows=result)
+
+
+@auth.requires_signature()
+@auth.requires_login()
+def toggle_star():
+    star_record = db((db.star.post_id == int(request.args[0])) &
+        (db.star.user_id == auth.user_id)).select().first()
+    if star_record is not None:
+        # Removes star.
+        db(db.star.id == star_record.id).delete()
+    else:
+        # Adds the star.
+        db.star.insert(
+            user_id = auth.user.id,
+            post_id = int(request.args[0]))
+    redirect(URL('default', 'index_inefficient'))
 
 
 @auth.requires_login()

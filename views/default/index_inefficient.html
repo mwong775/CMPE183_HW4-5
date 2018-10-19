@@ -26,9 +26,13 @@
       {{=A('Edit', _href=URL('default', 'edit1', vars=dict(id=r['id'])), _class='btn')}}
       {{=A('Delete Immediately', _href=URL('default', 'delete', args=[r['id']], user_signature=True), _class='btn')}}
     {{pass}}
+
     {{if auth.user is not None:}}
-    <a><i class="fa fa-star-o"></i></a>
-    {{pass}}
+    {{if r['starred']:}}
+      <a href="{{=URL('default', 'toggle_star', args=r['id'], user_signature=True)}}"><i class="fa fa-star"></i></a>
+    {{else:}}
+      <a href="{{=URL('default', 'toggle_star', args=r['id'], user_signature=True)}}"><i class="fa fa-star-o"></i></a>
+    {{pass}}{{pass}}
     </div>
   </div>
   {{pass}}
