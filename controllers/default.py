@@ -67,6 +67,11 @@ def index():
 
 def index_thumbs():
     result = [] # We will accummulate the result here.
+    num_posts = 2
+    try:
+        num_posts = int(request.vars.num_posts)
+    except ValueError:
+        pass
     if auth.user is None:
         # We cannot give information on stars; we can simply give out a list of posts.
         for r in db(db.post.id > 0).select():
@@ -86,7 +91,7 @@ def index_thumbs():
                            left=db.star.on(
                                (db.post.id == db.star.post_id) & # The star has to be for the post
                                (db.star.user_id == auth.user.id) # And it must be from the logged in user.
-                           ))
+                           ), limitby=(0, num_posts), orderby=db.post.post_time)
         for r in rows:
             # I need to get from the DB two additional things.
             # First, I want the list of people who thumbed it up/down.
@@ -116,7 +121,7 @@ def index_thumbs():
                 id=r.post.id, # This is the id of the post, as before.
             ))
     logger.info("Result: %r" % result)
-    return dict(rows=result)
+    return dict(rows=result, num_posts=num_posts)
 
 
 @auth.requires_signature()
