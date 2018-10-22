@@ -3,6 +3,7 @@ databases/*
 errors/*
 sessions/*
 uploads/*
+private/gcs_keys.json
 *.pyc
 *~
 .sass-cache

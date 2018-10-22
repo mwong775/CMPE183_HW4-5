@@ -45,7 +45,7 @@ def add_reply():
     """COMPLETE (and remove line below or replace as appropriate)"""
     # You will be creating a form, in some way, e.g. using SQLFORM, and you will write
     # BEFORE processing the form:
-    # form.vars.post_id == request.args[0]
+    # form.vars.post_id == int(request.args[0])
     return redirect(URL('default', 'index'))
 
 
