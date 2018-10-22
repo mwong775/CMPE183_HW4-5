@@ -184,26 +184,12 @@ def toggle_star():
     redirect(request.vars.next) # Notice that now it's the request that tells us where to go next.
 
 
-@auth.requires_login()
-def add1():
-    """INSECURE -- form does not contain token -- do not use."""
-    """Very simple way to insert records."""
-    logger.info("Request method: %r", request.env.request_method)
-    if request.env.request_method == 'POST':
-        # This is a postback.  Insert the record.
-        logger.info("We are inserting: title: %r content: %r" % (
-            # I could also access the title via request.post_vars.post_title,
-            # but I don't care to differentiate betw post and get variables.
-            request.vars.post_title, request.vars.post_content
-        ))
-        db.post.insert(
-            post_title=request.vars.post_title,
-            post_content=request.vars.post_content
-        )
-        redirect(URL('default', 'index'))
-    else:
-        # This is a GET request.  Returns the form.
-        return dict()
+def please_no_q(form):
+    """This is a function, not a controller, as it has one argument."""
+    if 'q' in form.vars.post_title:
+        form.errors.post_title = "You wrote the terrible letter in the title! This is not allowed."
+    if 'q' in form.vars.post_content:
+        form.vars.post_title += ' ' + "Warning: the post content contains the Letter That Shall Not Be Written"
 
 
 @auth.requires_login()
@@ -215,7 +201,7 @@ def add2():
     )
     # We can process the form.  This will check that the request is a POST,
     # and also perform validation, but in this case there is no validation.
-    if form.process().accepted:
+    if form.process(onvalidation=please_no_q).accepted:
         # We insert the result, as in add1.
         db.post.insert(
             post_title=form.vars.post_title,
