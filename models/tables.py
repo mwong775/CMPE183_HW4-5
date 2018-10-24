@@ -41,11 +41,8 @@ db.define_table('customer_order',
 # Validators
 # The ones below also generates the drop down lists.
 db.customer_order.product_ordered.requires = IS_IN_DB(db, db.product.id, '%(product_name)s')
-db.customer_order.shipping_method.requires = IS_IN_SET(['Air', 'Surface', 'Underground'])
-# This one is just a positive range validator.
-db.customer_order.quantity.requires = IS_INT_IN_RANGE(0, None)
-
-
+db.customer_order.shipping_method.requires = IS_IN_SET(['Air', 'Surface', 'Underground'], zero=None)
+db.customer_order.shipping_method.default = 'Surface'
 
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
