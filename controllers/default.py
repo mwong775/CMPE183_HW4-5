@@ -94,11 +94,15 @@ def buy():
     else:
         form.vars.quantity = min(stock_amount, int(request.vars.q))
     # Form processing.
+    # If this is a POST, we need to do a database transaction.
+    begin_serializable()
     if form.process(onvalidate=validate_purchase(product)).accepted:
         # We have to update the quantity ordered.
         product.update_record(quantity_ordered = product.quantity_ordered + form.vars.quantity)
         session.flash = T('The order has been placed.  Thank you for your business.')
         redirect(URL('default', 'index'))
+        end_serializable()
+    # No need for end_serializable() here.
     return dict(name=product.product_name, form=form)
 
 
@@ -126,28 +130,27 @@ def orders():
         q = ((db.customer_order.product_ordered == db.product.id) & # This joins the tables.
              (db.customer_order.customer == get_user_email())) # Ordered by me.
         # If the user is a customer, we add a button to reorder it it.
-        if is_customer():
-            links.append(dict(
-                header='', # This is the header in the table for the buttons; not needed here.
-                body= lambda row : A(
-                    T('Reorder'),
-                    _href=URL('default', 'buy',
-                              args=[row.product.id],
-                              vars=dict(q=row.customer_order.quantity)),
-                    _class='btn')
-            ))
-        # There is also a link to delete an order.
         links.append(dict(
-            header='',
-            body = lambda row : A(
-                T('Cancel Order'),
-                _href=URL('default', 'cancel_order',
-                          args=[row.customer_order.id],
-                          vars=dict(next=URL(args=request.args, vars=request.get_vars)), # Go back here
-                          user_signature=True),
-                _class='btn'
-            )
+            header='', # This is the header in the table for the buttons; not needed here.
+            body= lambda row : A(
+                T('Reorder'),
+                _href=URL('default', 'buy',
+                          args=[row.product.id],
+                          vars=dict(q=row.customer_order.quantity)),
+                _class='btn')
         ))
+    # There is also a link to delete an order.
+    links.append(dict(
+        header='',
+        body = lambda row : A(
+            T('Cancel Order'),
+            _href=URL('default', 'cancel_order',
+                      args=[row.customer_order.id],
+                      vars=dict(next=URL(args=request.args, vars=request.get_vars)), # Go back here
+                      user_signature=True),
+            _class='btn'
+        )
+    ))
     form = SQLFORM.grid(
         q,
         fields=fields,
@@ -170,8 +173,10 @@ def cancel_order():
     product = db.product(order.product_ordered)
     if product is None:
         redirect(URL('default', 'index'))
+    begin_serializable(always=True) # Not only when called from POST.
     product.update_record(quantity_ordered = product.quantity_ordered - order.quantity)
     order.delete_record()
+    end_serializable()
     redirect(request.vars.next)
 
 
