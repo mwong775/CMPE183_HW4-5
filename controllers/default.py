@@ -171,7 +171,7 @@ def cancel_order():
     product = db.product(order.product_ordered)
     if product is None:
         redirect(URL('default', 'index'))
-    with Transaction():
+    with Transaction(always=True): # We start the transaction even though this is not a POST.
         product.update_record(quantity_ordered = product.quantity_ordered - order.quantity)
         order.delete_record()
     redirect(request.vars.next)
