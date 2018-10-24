@@ -38,6 +38,7 @@ def index():
         links=links,
         editable=is_owner(),
         deletable=is_owner(),
+        create=is_owner(),
         csv=is_owner(),
         details=True,
     )
@@ -155,6 +156,7 @@ def orders():
         links=links,
         editable=False,
         deletable=False,
+        create=False,
         csv=is_owner(),
         details=False, # Does not work well for joins.
     )
