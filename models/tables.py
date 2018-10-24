@@ -12,6 +12,7 @@ import datetime
 db.define_table('product',
                 Field('product_name'),
                 Field('product_quantity', 'integer', ),
+                Field('quantity_ordered', 'integer', default=0),
                 Field('product_price', 'float'),
                 Field('product_description', 'text'),
                 )
@@ -43,6 +44,8 @@ db.define_table('customer_order',
 db.customer_order.product_ordered.requires = IS_IN_DB(db, db.product.id, '%(product_name)s')
 db.customer_order.shipping_method.requires = IS_IN_SET(['Air', 'Surface', 'Underground'], zero=None)
 db.customer_order.shipping_method.default = 'Surface'
+
+# Visibility
 
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
