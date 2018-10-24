@@ -28,11 +28,10 @@ def index():
         # For other people, only those in stock.
         q = db.product.product_quantity > db.product.quantity_ordered
         # If the user is a customer, we add a button to buy it.
-        if is_customer():
-            links.append(dict(
-                header='', # This is the header in the table for the buttons; not needed here.
-                body= lambda row : A(T('Buy'), _href=URL('default', 'buy', args=[row.id]), _class='btn')
-            ))
+        links.append(dict(
+            header='', # This is the header in the table for the buttons; not needed here.
+            body= lambda row : A(T('Buy'), _href=URL('default', 'buy', args=[row.id]), _class='btn')
+        ))
     form = SQLFORM.grid(
         q,
         fields=fields,
@@ -43,6 +42,7 @@ def index():
         details=True,
     )
     return dict(form=form)
+
 
 def validate_purchase(product):
     """We need to check that we have enough in stock.
