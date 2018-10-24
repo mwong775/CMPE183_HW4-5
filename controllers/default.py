@@ -70,33 +70,37 @@ def validate_purchase(product):
 @auth.requires_login()
 def buy():
     """Allows customers to buy stuff."""
-    product = db.product(request.args(0))
-    if product is None:
-        # No such product found.
-        redirect(URL('default', 'index'))
-    stock_amount = product.product_quantity - product.quantity_ordered
-    if stock_amount <= 0:
-        # Not in stock.
-        session.message = T("The product is not in stock")
-        redirect(URL('default', 'index'))
-    # Okkay, we have the product.  Let's produce a form.
-    # Customizations for the form.
-    db.customer_order.product_ordered.readable = db.customer_order.product_ordered.writable = False
-    db.customer_order.customer.readable = db.customer_order.customer.writable = False
-    db.customer_order.order_time.readable = db.customer_order.order_time.writable = False
-    # I can create the form now.
-    form = SQLFORM(db.customer_order)
-    # I pre-fill that the order is for socks.
-    form.vars.product_ordered = int(request.args(0))
-    # If there is a variable indicating the quantity, we use it to initialize it.
-    # Otherwise, we initalize the quantity of the order to 1.
-    if request.vars.q is None:
-        form.vars.quantity = 1
-    else:
-        form.vars.quantity = min(stock_amount, int(request.vars.q))
-    # Form processing.
     # If this is a POST, we need to do a database transaction.
     with Transaction():
+        product = db.product(request.args(0))
+        if product is None:
+            # No such product found.
+            redirect(URL('default', 'index'))
+        stock_amount = product.product_quantity - product.quantity_ordered
+        if stock_amount <= 0:
+            # Not in stock.
+            session.message = T("The product is not in stock")
+            redirect(URL('default', 'index'))
+        # Okkay, we have the product.  Let's produce a form.
+        # Customizations for the form.
+        db.customer_order.product_ordered.readable = db.customer_order.product_ordered.writable = False
+        db.customer_order.customer.readable = db.customer_order.customer.writable = False
+        db.customer_order.order_time.readable = db.customer_order.order_time.writable = False
+
+        # Alternative valuation.
+        # db.customer_order.quantity.requires = IS_INT_IN_RANGE(0, stock_amount)
+
+        # I can create the form now.
+        form = SQLFORM(db.customer_order)
+        # I pre-fill that the order is for socks.
+        form.vars.product_ordered = int(request.args(0))
+        # If there is a variable indicating the quantity, we use it to initialize it.
+        # Otherwise, we initalize the quantity of the order to 1.
+        if request.vars.q is None:
+            form.vars.quantity = 1
+        else:
+            form.vars.quantity = min(stock_amount, int(request.vars.q))
+        # Form processing.
         if form.process(onvalidation=validate_purchase(product)).accepted:
             # We have to update the quantity ordered.
             product.update_record(quantity_ordered = product.quantity_ordered + form.vars.quantity)
@@ -166,17 +170,17 @@ def orders():
 @auth.requires_signature()
 def cancel_order():
     """Cancels an order."""
-    order = db.customer_order(request.args(0))
-    if order is None:
-        redirect(URL('default', 'index'))
-    # We decrement the quantity on order.
-    product = db.product(order.product_ordered)
-    if product is None:
-        redirect(URL('default', 'index'))
     with Transaction(always=True): # We start the transaction even though this is not a POST.
+        order = db.customer_order(request.args(0))
+        if order is None:
+            redirect(URL('default', 'index'))
+        # We decrement the quantity on order.
+        product = db.product(order.product_ordered)
+        if product is None:
+            redirect(URL('default', 'index'))
         product.update_record(quantity_ordered = product.quantity_ordered - order.quantity)
         order.delete_record()
-    redirect(request.vars.next)
+        redirect(request.vars.next)
 
 
 def user():
