@@ -9,17 +9,6 @@
 
 import datetime
 
-def get_user_email():
-    return None if auth.user is None else auth.user.email
-
-# Am I the owner of the store, or a customer?
-def is_owner():
-    return get_user_email() == 'seller@ucsc.edu'
-
-def is_customer():
-    return not is_owner()
-
-
 db.define_table('product',
                 Field('product_name'),
                 Field('product_quantity', 'integer', ),

@@ -32,34 +32,26 @@ response.menu = [
     (T('Home'), False, URL('default', 'index'), [])
 ]
 
-DEVELOPMENT_MENU = True
+def get_user_email():
+    return None if auth.user is None else auth.user.email
 
+# Am I the owner of the store, or a customer?
+def is_owner():
+    return get_user_email() == 'seller@ucsc.edu'
 
-# ----------------------------------------------------------------------------------------------------------------------
-# provide shortcuts for development. remove in production
-# ----------------------------------------------------------------------------------------------------------------------
+def is_customer():
+    return auth.user is not None and not is_owner()
 
-def _():
-    # ------------------------------------------------------------------------------------------------------------------
-    # shortcuts
-    # ------------------------------------------------------------------------------------------------------------------
-    app = request.application
-    ctr = request.controller
-    # ------------------------------------------------------------------------------------------------------------------
-    # useful links to internal and external resources
-    # ------------------------------------------------------------------------------------------------------------------
+# We customize the menu.
+if is_customer():
     response.menu += [
-        (T('My Sites'), False, URL('admin', 'default', 'site')),
-        (T('Sample Menu 1'), False, '#', [
-            (T('Entry1'), False, URL('default', 'entry1')),
-            (T('Entry2'), False, URL('default', 'entry2')),
-        ]),
-        (T('Sample Menu 2'), False, URL('default', 'index'))
+        (T('My Orders'), False, URL('default', 'orders')),
+    ]
+elif is_owner():
+    response.menu += [
+        (T('Orders'), False, URL('default', 'orders')),
     ]
 
-
-if DEVELOPMENT_MENU:
-    _()
-
+# This is the login.
 if "auth" in locals():
     auth.wikimenu()
