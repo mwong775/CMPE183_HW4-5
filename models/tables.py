@@ -29,7 +29,8 @@ db.product.product_quantity.label = 'Quantity'
 db.product.product_price.label = 'Price'
 db.product.product_description.label = 'Description'
 
-db.define_table('product_order',
+
+db.define_table('customer_order',
                 Field('product_ordered', 'reference product'),
                 Field('quantity', 'integer'),
                 Field('shipping_method'),
@@ -39,10 +40,10 @@ db.define_table('product_order',
 
 # Validators
 # The ones below also generates the drop down lists.
-db.product_order.product_ordered.requires = IS_IN_DB(db, db.product.id, '%(product_name)s')
-db.product_order.shipping_method.requires = IS_IN_SET(['Air', 'Surface', 'Underground'])
+db.customer_order.product_ordered.requires = IS_IN_DB(db, db.product.id, '%(product_name)s')
+db.customer_order.shipping_method.requires = IS_IN_SET(['Air', 'Surface', 'Underground'])
 # This one is just a positive range validator.
-db.product_order.quantity.requires = IS_INT_IN_RANGE(0, None)
+db.customer_order.quantity.requires = IS_INT_IN_RANGE(0, None)
 
 
 

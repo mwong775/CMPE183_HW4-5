@@ -10,15 +10,36 @@
 
 
 def index():
-    """
-    example action using the internationalization operator T and flash
-    rendered by views/default/index.html or views/generic.html
-
-    if you need a simple wiki simply replace the two lines below with:
-    return auth.wiki()
-    """
-    response.flash = T("Hello World")
-    return dict(message=T('Welcome to web2py!'))
+    """Displays a list of products.  For the store owner, the list is editable.
+    For customers, the list is not editable, but if products are in stock,
+    there is a buy button."""
+    # Fields to display.
+    fields = [db.product.id, db.product.product_name, db.product.product_price]
+    links = []
+    if is_owner():
+        # All products
+        q = db.product
+        # We want to see also the quantity in stock.
+        fields.extend([db.product.product_quantity])
+    else:
+        # For other people, only those in stock.
+        q = db.product.product_quantity > 0
+        # If the user is a customer, we add a button to buy it.
+        if is_customer():
+            links.append(dict(
+                header='', # This is the header in the table for the buttons; not needed here.
+                body= lambda row : A(T('Buy'), _href=URL('default', 'buy', args=[row.id]), _class='btn')
+            ))
+    form = SQLFORM.grid(
+        q,
+        fields=fields,
+        links=links,
+        editable=is_owner(),
+        deletable=is_owner(),
+        csv=is_owner(),
+        details=True,
+    )
+    return dict(form=form)
 
 
 def user():
