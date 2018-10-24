@@ -95,14 +95,12 @@ def buy():
         form.vars.quantity = min(stock_amount, int(request.vars.q))
     # Form processing.
     # If this is a POST, we need to do a database transaction.
-    begin_serializable()
-    if form.process(onvalidate=validate_purchase(product)).accepted:
-        # We have to update the quantity ordered.
-        product.update_record(quantity_ordered = product.quantity_ordered + form.vars.quantity)
-        session.flash = T('The order has been placed.  Thank you for your business.')
-        redirect(URL('default', 'index'))
-        end_serializable()
-    # No need for end_serializable() here.
+    with Transaction():
+        if form.process(onvalidate=validate_purchase(product)).accepted:
+            # We have to update the quantity ordered.
+            product.update_record(quantity_ordered = product.quantity_ordered + form.vars.quantity)
+            session.flash = T('The order has been placed.  Thank you for your business.')
+            redirect(URL('default', 'index'))
     return dict(name=product.product_name, form=form)
 
 
@@ -173,10 +171,9 @@ def cancel_order():
     product = db.product(order.product_ordered)
     if product is None:
         redirect(URL('default', 'index'))
-    begin_serializable(always=True) # Not only when called from POST.
-    product.update_record(quantity_ordered = product.quantity_ordered - order.quantity)
-    order.delete_record()
-    end_serializable()
+    with Transaction():
+        product.update_record(quantity_ordered = product.quantity_ordered - order.quantity)
+        order.delete_record()
     redirect(request.vars.next)
 
 
