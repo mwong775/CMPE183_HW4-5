@@ -96,7 +96,7 @@ def buy():
     # Form processing.
     # If this is a POST, we need to do a database transaction.
     with Transaction():
-        if form.process(onvalidate=validate_purchase(product)).accepted:
+        if form.process(onvalidation=validate_purchase(product)).accepted:
             # We have to update the quantity ordered.
             product.update_record(quantity_ordered = product.quantity_ordered + form.vars.quantity)
             session.flash = T('The order has been placed.  Thank you for your business.')
