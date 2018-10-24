@@ -70,7 +70,8 @@ def buy():
     if product is None:
         # No such product found.
         redirect(URL('default', 'index'))
-    if product.product_quantity - product.quantity_ordered <= 0:
+    stock_amount = product.product_quantity - product.quantity_ordered
+    if stock_amount <= 0:
         # Not in stock.
         session.message = T("The product is not in stock")
         redirect(URL('default', 'index'))
@@ -83,6 +84,13 @@ def buy():
     form = SQLFORM(db.customer_order)
     # I pre-fill that the order is for socks.
     form.vars.product_ordered = int(request.args(0))
+    # If there is a variable indicating the quantity, we use it to initialize it.
+    # Otherwise, we initalize the quantity of the order to 1.
+    if request.vars.q is None:
+        form.vars.quantity = 1
+    else:
+        form.vars.quantity = min(stock_amount, int(request.vars.q))
+    # Form processing.
     if form.process(onvalidate=validate_purchase(product)).accepted:
         # We have to update the quantity ordered.
         product.update_record(quantity_ordered = product.quantity_ordered + form.vars.quantity)
@@ -119,9 +127,9 @@ def orders():
                 header='', # This is the header in the table for the buttons; not needed here.
                 body= lambda row : A(
                     T('Reorder'),
-                    _href=URL('default', 'reorder',
-                              args=[row.customer_order.id],
-                              user_signature=True),
+                    _href=URL('default', 'buy',
+                              args=[row.product.id],
+                              vars=dict(q=row.customer_order.quantity)),
                     _class='btn')
             ))
         # There is also a link to delete an order.
