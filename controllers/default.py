@@ -21,6 +21,9 @@ def index():
         q = db.product
         # We want to see also the quantity in stock.
         fields.extend([db.product.product_quantity, db.product.quantity_ordered])
+        # We cannot add virtual fields to fields, so we have to represent this as a link.
+        links.append(dict(header='In stock',
+                          body= lambda row : row.product_quantity - row.quantity_ordered))
     else:
         # For other people, only those in stock.
         q = db.product.product_quantity > db.product.quantity_ordered
@@ -104,9 +107,10 @@ def orders():
     """Displays orders.  If we are the shop owner, this will display all orders,
     otherwise, it will just display our own orders."""
     # Fields to display.
-    fields = [db.customer_order.id, db.customer_order.product_ordered,
+    fields = [db.customer_order.id, db.product.product_name,
+              db.customer_order.product_ordered, # This is needed for the join even if we don't show it.
               db.customer_order.quantity,
-              db.product.product_price, db.product.id, db.product.product_name]
+              db.product.product_price, db.product.id, ]
     links = []
     if is_owner():
         # All products
