@@ -158,7 +158,8 @@ var app = function() {
             form_title: "",
             form_content: "",
             post_list: [],
-            star_indices: [1, 2, 3, 4, 5]
+            star_indices: [1, 2, 3, 4, 5],
+            is_logged_in: is_logged_in
         },
         methods: {
             add_post: self.add_post,
