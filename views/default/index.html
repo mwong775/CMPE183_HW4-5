@@ -21,6 +21,7 @@
                     :disabled="!is_title_editable"                    
                     v-on:blur="end_edit_title" 
                     v-model="title" placeholder="Write a title here" />
+                <i v-if="title_save_pending" class="fa fa-spinner fa-pulse fa-fw"></i>
             </div>
             
         </div>

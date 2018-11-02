@@ -1,5 +1,6 @@
 # Here go your api methods.
 
+import time
 
 @auth.requires_signature()
 def get_title():
@@ -14,4 +15,5 @@ def set_title():
         db.my_table.the_user == u,
         the_title = request.vars.title,
     )
+    time.sleep(2)
     return "ok"

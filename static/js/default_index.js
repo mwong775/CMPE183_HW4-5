@@ -17,12 +17,22 @@ var app = function() {
         self.vue.is_title_editable = true;
     };
 
+    self.send_title = function () {
+        // Starts the spinner.
+        self.vue.title_save_pending = true;
+        $.post(set_title_url, 
+            {title: self.vue.title},
+            function (data) {
+                self.vue.title_save_pending = false;
+            }
+            );
+        // Not here, the self.vue.title_save_pending = false;
+    };
+
     self.end_edit_title = function () {
         self.vue.is_title_editable = false;
         // We send the title.
-        $.post(set_title_url, 
-            {title: self.vue.title}
-            );
+        self.send_title();
     };
 
     self.get_title = function () {
@@ -41,6 +51,7 @@ var app = function() {
             is_logged_in: is_logged_in,
             title: "",
             is_title_editable: false,
+            title_save_pending: false,
         },
         methods: {
             edit_title: self.edit_title,
