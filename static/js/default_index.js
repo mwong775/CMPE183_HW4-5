@@ -19,6 +19,17 @@ var app = function() {
 
     self.end_edit_title = function () {
         self.vue.is_title_editable = false;
+        // We send the title.
+        $.post(set_title_url, 
+            {title: self.vue.title}
+            );
+    };
+
+    self.get_title = function () {
+        $.getJSON(get_title_url, function(data) {
+            self.vue.title = data.title
+        }
+        );
     };
 
     // Complete as needed.
@@ -38,6 +49,8 @@ var app = function() {
 
     });
 
+    // Let's get the info. 
+    self.get_title();
 
     return self;
 };

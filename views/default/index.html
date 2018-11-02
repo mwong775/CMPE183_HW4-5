@@ -3,7 +3,8 @@
 {{block head}}
 <script src="{{=URL('static', 'js/vue.js')}}"></script>
 <script>
-    var my_url = "{{=URL('api', 'my_method')}}";
+    var get_title_url = "{{=URL('api', 'get_title', user_signature=True)}}";
+    var set_title_url = "{{=URL('api', 'set_title', user_signature=True)}}";
     var is_logged_in = {{='true' if auth.user else 'false'}};
 </script>
 {{end}}
