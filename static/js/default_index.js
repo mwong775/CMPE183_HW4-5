@@ -13,14 +13,27 @@ var app = function() {
         }
     };
 
+    self.edit_title = function () {
+        self.vue.is_title_editable = true;
+    };
+
+    self.end_edit_title = function () {
+        self.vue.is_title_editable = false;
+    };
+
     // Complete as needed.
     self.vue = new Vue({
         el: "#vue-div",
         delimiters: ['${', '}'],
         unsafeDelimiters: ['!{', '}'],
         data: {
+            is_logged_in: is_logged_in,
+            title: "",
+            is_title_editable: false,
         },
         methods: {
+            edit_title: self.edit_title,
+            end_edit_title: self.end_edit_title
         }
 
     });

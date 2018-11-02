@@ -4,6 +4,7 @@
 <script src="{{=URL('static', 'js/vue.js')}}"></script>
 <script>
     var my_url = "{{=URL('api', 'my_method')}}";
+    var is_logged_in = {{='true' if auth.user else 'false'}};
 </script>
 {{end}}
 
@@ -11,7 +12,20 @@
 
     <div id="vue-div" class="display:none">
         <!-- Your code goes here.  Remember to call $("#vue-div").show() once you get the data for the first time. -->
+    
+        <div v-if="is_logged_in">
+            
+            <div class="title">
+                <input v-on:blur="end_edit_title" v-if="is_title_editable" v-model="title" placeholder="Write a title here" />
+                <div v-if="!is_title_editable" v-on:click="edit_title" class="editable">
+                    <p>${title}</p>
+                </div>
+            </div>
+            
+        </div>
+    
     </div>
+
 
 </div>
 

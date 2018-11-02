@@ -1,3 +1,12 @@
 .colorful {
   color: $clrHilight;
 }
+
+.main_content {
+  padding: 20px;
+  .editable {
+    background-color: $clrEditable;
+    min-height: 20px;
+    min-width: 20px;
+  }
+}
