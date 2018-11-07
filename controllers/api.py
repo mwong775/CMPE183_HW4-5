@@ -99,7 +99,7 @@ def upload_track():
         original_filename=request.vars.file.filename,
         data_blob=request.vars.file.file.read(),
         mime_type=request.vars.file.type,
-        insertion_id=request.vars.insertion_id,
+        insertion_id=request.vars.insertion_id, # Legacy of the past.
     )
     return response.json(dict(
         insertion_id=insertion_id
