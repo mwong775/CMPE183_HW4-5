@@ -15,6 +15,12 @@ var app = function() {
     // Enumerates an array.
     var enumerate = function(v) { var k=0; return v.map(function(e) {e._idx = k++;});};
 
+    var enumerate = function (v) {
+        for (var i = 0; i < v.length; i++) {
+            v._idx = i;
+        }
+    }
+
     self.add_post = function () {
         // We disable the button, to prevent double submission.
         $.web2py.disableElement($("#add-post"));
