@@ -30,37 +30,49 @@ var app = function() {
     };
 
     self.upload_file = function (event) {
+        // This function is in charge of: 
+        // - Creating an image preview
+        // - Uploading the image to GCS
+        // - Calling another function to notify the server of the final image URL.
+
         // Reads the file.
         var input = event.target;
         var file = input.files[0];
-        // We want to read the image file, and transform it into a data URL.
-        var reader = new FileReader();
-
-        // We add a listener for the load event of the file reader.
-        // The listener is called when loading terminates.
-        // Once loading (the reader.readAsDataURL) terminates, we have
-        // the data URL available. 
-        reader.addEventListener("load", function () {
-            // An image can be represented as a data URL.
-            // See https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs
-            // Here, we set the data URL of the image contained in the file to an image in the
-            // HTML, causing the display of the file image.
-            self.vue.img_url = reader.result;
-        }, false);
-
         if (file) {
-            // Reads the file as a data URL.
+            // We want to read the image file, and transform it into a data URL.
+            var reader = new FileReader();
+            // We add a listener for the load event of the file reader.
+            // The listener is called when loading terminates.
+            // Once loading (the reader.readAsDataURL) terminates, we have
+            // the data URL available. 
+            reader.addEventListener("load", function () {
+                // An image can be represented as a data URL.
+                // See https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs
+                // Here, we set the data URL of the image contained in the file to an image in the
+                // HTML, causing the display of the file image.
+                self.vue.img_url = reader.result;
+            }, false);
+            // Reads the file as a data URL. This triggers above event handler. 
             reader.readAsDataURL(file);
+
+            // Now we should take care of the upload.
             // Gets an upload URL.
             console.log("Trying to get the upload url");
             $.getJSON('https://upload-dot-luca-teaching.appspot.com/start/uploader/get_upload_url',
                 function (data) {
                     // We now have upload (and download) URLs.
+                    // The PUT url is used to upload the image.
+                    // The GET url is used to notify the server where the image has been uploaded;
+                    // that is, the GET url is the location where the image will be accessible 
+                    // after the upload.  We pass the GET url to the upload_complete function (below)
+                    // to notify the server. 
                     var put_url = data['signed_url'];
                     var get_url = data['access_url'];
                     console.log("Received upload url: " + put_url);
                     // Uploads the file, using the low-level interface.
                     var req = new XMLHttpRequest();
+                    // We listen to the load event = the file is uploaded, and we call upload_complete.
+                    // That function will notify the server of the location of the image. 
                     req.addEventListener("load", self.upload_complete(get_url));
                     // TODO: if you like, add a listener for "error" to detect failure.
                     req.open("PUT", put_url, true);
