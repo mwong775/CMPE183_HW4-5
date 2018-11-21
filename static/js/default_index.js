@@ -44,7 +44,13 @@ var app = function() {
                 var new_post = {
                     id: data.post_id,
                     post_title: sent_title,
-                    post_content: sent_content
+                    post_content: sent_content,
+                    // When we add a new post, we have to make it look like what we get
+                    // from the server. See get_post_list in API, we have to define all
+                    // the fields that we define there.
+                    post_author: user_email,
+                    like: false,
+                    rating: null // We could also use 0 here I guess. 
                 };
                 self.vue.post_list.unshift(new_post);
                 // We re-enumerate the array.
@@ -163,7 +169,7 @@ var app = function() {
         },
         function (data) {
             // We need to remove the post client-side.
-            // splice does the job.  
+            // splice does the job.
             self.vue.post_list.splice(post_idx, 1);
         }
     );
