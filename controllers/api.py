@@ -26,14 +26,14 @@ def get_post_list():
             # Checks the star.
             r = db((db.user_star.post_id == row.id) & (db.user_star.user_email == auth.user.email)).select().first()
             rating = None if r is None else r.rating
-    results.append(dict(
-        id=row.id,
-        post_title=row.post_title,
-        post_content=row.post_content,
-        post_author=row.post_author,
-        like=like,
-        rating=rating,
-    ))
+        results.append(dict(
+            id=row.id,
+            post_title=row.post_title,
+            post_content=row.post_content,
+            post_author=row.post_author,
+            like=like,
+            rating=rating,
+        ))
     # For homogeneity, we always return a dictionary.
     return response.json(dict(post_list=results))
 
