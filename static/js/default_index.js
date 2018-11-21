@@ -15,17 +15,18 @@ var app = function() {
     // Enumerates an array.
     var enumerate = function(v) { var k=0; return v.map(function(e) {e._idx = k++;});};
 
+    // Alternative version.
     var enumerate = function (v) {
         for (var i = 0; i < v.length; i++) {
-            v._idx = i;
+            v[i]._idx = i;
         }
     }
 
     self.add_post = function () {
         // We disable the button, to prevent double submission.
         $.web2py.disableElement($("#add-post"));
-        var sent_title = self.vue.form_title; // Makes a copy 
-        var sent_content = self.vue.form_content; // 
+        var sent_title = self.vue.form_title; // Makes a copy
+        var sent_content = self.vue.form_content; //
         $.post(add_post_url,
             // Data we are sending.
             {
@@ -39,7 +40,7 @@ var app = function() {
                 // Clears the form.
                 self.vue.form_title = "";
                 self.vue.form_content = "";
-                // Adds the post to the list of posts. 
+                // Adds the post to the list of posts.
                 var new_post = {
                     id: data.post_id,
                     post_title: sent_title,
@@ -68,28 +69,28 @@ var app = function() {
 
     self.process_posts = function() {
         // This function is used to post-process posts, after the list has been modified
-        // or after we have gotten new posts. 
-        // We add the _idx attribute to the posts. 
+        // or after we have gotten new posts.
+        // We add the _idx attribute to the posts.
         enumerate(self.vue.post_list);
-        // We initialize the smile status to match the like. 
+        // We initialize the smile status to match the like.
         self.vue.post_list.map(function (e) {
             // I need to use Vue.set here, because I am adding a new watched attribute
             // to an object.  See https://vuejs.org/v2/guide/list.html#Object-Change-Detection-Caveats
-            // Did I like it? 
-            // If I do e._smile = e.like, then Vue won't see the changes to e._smile . 
-            Vue.set(e, '_smile', e.like); 
+            // Did I like it?
+            // If I do e._smile = e.like, then Vue won't see the changes to e._smile .
+            Vue.set(e, '_smile', e.like);
             // Who liked it?
             Vue.set(e, '_likers', []);
             // Do I know who liked it? (This could also be a timestamp to limit refresh)
             Vue.set(e, '_likers_known', false);
-            // Do I show who liked? 
+            // Do I show who liked?
             Vue.set(e, '_show_likers', false);
             // Number of stars to display.
             Vue.set(e, '_num_stars_display', e.rating);
         });
     };
 
-    // Code for getting and displaying the list of likers. 
+    // Code for getting and displaying the list of likers.
     self.show_likers = function(post_idx) {
         var p = self.vue.post_list[post_idx];
         p._show_likers = true;
@@ -106,7 +107,7 @@ var app = function() {
         p._show_likers = false;
     };
 
-    // Smile change code. 
+    // Smile change code.
     self.like_mouseover = function (post_idx) {
         // When we mouse over something, the face has to assume the opposite
         // of the current state, to indicate the effect.
@@ -168,7 +169,7 @@ var app = function() {
         },
         methods: {
             add_post: self.add_post,
-            // Likers. 
+            // Likers.
             like_mouseover: self.like_mouseover,
             like_mouseout: self.like_mouseout,
             like_click: self.like_click,
