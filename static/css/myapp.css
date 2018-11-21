@@ -23,11 +23,19 @@ div.main_content div.post_div {
 div.main_content div.post_div .post_title {
   font-size: 120%;
 }
-/* line 22, ../sass/_main.scss */
+/* line 21, ../sass/_main.scss */
+div.main_content div.post_div .delete_icon {
+  color: gray;
+}
+/* line 24, ../sass/_main.scss */
+div.main_content div.post_div .delete_icon:hover {
+  color: black;
+}
+/* line 28, ../sass/_main.scss */
 div.main_content i.changed {
   color: #777777;
 }
-/* line 25, ../sass/_main.scss */
+/* line 31, ../sass/_main.scss */
 div.main_content span.likers_list {
   color: #7777cc;
 }

@@ -18,6 +18,12 @@ div.main_content {
     .post_title {
       font-size: 120%;
     }
+    .delete_icon {
+      color: gray;
+    }
+    .delete_icon:hover {
+      color: black;
+    }
   }
   i.changed {
     color: $clrUnconfirmed;

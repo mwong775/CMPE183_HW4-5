@@ -11,6 +11,9 @@
     // Stars.
     var set_stars_url = "{{=URL('api', 'set_stars', user_signature=True)}}";
     var is_logged_in = {{='false' if auth.user is None else 'true'}};
+    var user_email = "{{='' if auth.user is None else auth.user.email}}";
+    // Delete posts.
+    var delete_post_url = "{{=URL('api', 'delete_post', user_signature=True)}}";
 </script>
 {{end}}
 
@@ -55,7 +58,7 @@
           <div class="post_title">${post.post_title}</div>
           <div class="post_content">${post.post_content}</div>
           <div class="attributes">
-            
+
             <!-- Code for likes. -->
             <div class="likers">
               <span class="show_likers">
@@ -83,6 +86,11 @@
                     <i v-if="idx > post._num_stars_display" class="fa fa-star-o"></i>
                 </span>
               </span>
+            </div>
+
+            <!-- Code for delete -->
+            <div v-if="user_email === post.post_author">
+              <span class="delete_icon"><i v-on:click="delete_post(post._idx)" class="fa fa-trash-o"></i></span>
             </div>
 
           </div>

@@ -156,12 +156,26 @@ var app = function() {
         });
     };
 
+    self.delete_post = function(post_idx) {
+        var p = self.vue.post_list[post_idx];
+        $.post(delete_post_url, {
+            post_id: p.id,
+        },
+        function (data) {
+            // We need to remove the post client-side.
+            // splice does the job.  
+            self.vue.post_list.splice(post_idx, 1);
+        }
+    );
+    }
+
     // Complete as needed.
     self.vue = new Vue({
         el: "#vue-div",
         delimiters: ['${', '}'],
         unsafeDelimiters: ['!{', '}'],
         data: {
+            user_email: user_email,
             form_title: "",
             form_content: "",
             post_list: [],
@@ -179,7 +193,9 @@ var app = function() {
             // Star ratings.
             stars_out: self.stars_out,
             stars_over: self.stars_over,
-            set_stars: self.set_stars
+            set_stars: self.set_stars,
+            // Delete post.
+            delete_post: self.delete_post
         }
 
     });

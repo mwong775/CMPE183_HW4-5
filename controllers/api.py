@@ -39,6 +39,19 @@ def get_post_list():
 
 
 @auth.requires_signature()
+def delete_post():
+    post_id = int(request.vars.post_id)
+    r = db.post(post_id)
+    if r is not None:
+        # For safety we check that the deleted post belongs to the user.
+        if r.post_author != auth.user.email:
+            raise(HTTP(403, "Not authorized"))
+        # We delete the post
+        r.delete_record()
+    return "ok"
+    
+
+@auth.requires_signature()
 def set_like():
     post_id = int(request.vars.post_id)
     like_status = request.vars.like.lower().startswith('t');
