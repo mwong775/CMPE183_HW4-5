@@ -5,6 +5,9 @@
 <script src="{{=URL('static', 'js/vue.js')}}"></script>
 <script>
   // Define your URLs here.
+  var image_post_url = "{{=URL('api', 'post_image')}}";
+  var image_get_url = "{{=URL('api', 'get_image')}}";
+
 </script>
 
 
@@ -17,7 +20,15 @@
 
     <div class="container padded">
 
-      <img v-if="show_img" v-bind:src="img_url" />
+      <div class="container">
+        <div class="half compressible">
+          <img v-bind:src="img_url" />
+        </div>
+        <div class="half compressible">
+          <img v-bind:src="received_image"/>
+          <button v-on:click="get_image">Get image</button>
+        </div>
+      </div>
 
       <div class="image_space threequarters">
         <!-- Left part of the page -->

@@ -15,3 +15,8 @@ def get_user_email():
 
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
+
+db.define_table('my_images',
+    Field('image_str', 'text'),
+    Field('blog_post_id', 'integer'), # Should be a reference to a blog post I guess. 
+)

@@ -51,45 +51,61 @@ var app = function() {
                 // Here, we set the data URL of the image contained in the file to an image in the
                 // HTML, causing the display of the file image.
                 self.vue.img_url = reader.result;
+                $.post(image_post_url, {
+                    image_url: reader.result,
+                    blog_post_id: 1 // Placeholder for more useful info.
+                });
             }, false);
             // Reads the file as a data URL. This triggers above event handler. 
             reader.readAsDataURL(file);
-
-            // Now we should take care of the upload.
-            // Gets an upload URL.
-            console.log("Trying to get the upload url");
-            $.getJSON('https://upload-dot-luca-teaching.appspot.com/start/uploader/get_upload_url',
-                function (data) {
-                    // We now have upload (and download) URLs.
-                    // The PUT url is used to upload the image.
-                    // The GET url is used to notify the server where the image has been uploaded;
-                    // that is, the GET url is the location where the image will be accessible 
-                    // after the upload.  We pass the GET url to the upload_complete function (below)
-                    // to notify the server. 
-                    var put_url = data['signed_url'];
-                    var get_url = data['access_url'];
-                    console.log("Received upload url: " + put_url);
-                    // Uploads the file, using the low-level interface.
-                    var req = new XMLHttpRequest();
-                    // We listen to the load event = the file is uploaded, and we call upload_complete.
-                    // That function will notify the server of the location of the image. 
-                    req.addEventListener("load", self.upload_complete(get_url));
-                    // TODO: if you like, add a listener for "error" to detect failure.
-                    req.open("PUT", put_url, true);
-                    req.send(file);
-                });
         }
     };
 
+    //         // Now we should take care of the upload.
+    //         // Gets an upload URL.
+    //         console.log("Trying to get the upload url");
+    //         $.getJSON('https://upload-dot-luca-teaching.appspot.com/start/uploader/get_upload_url',
+    //             function (data) {
+    //                 // We now have upload (and download) URLs.
+    //                 // The PUT url is used to upload the image.
+    //                 // The GET url is used to notify the server where the image has been uploaded;
+    //                 // that is, the GET url is the location where the image will be accessible 
+    //                 // after the upload.  We pass the GET url to the upload_complete function (below)
+    //                 // to notify the server. 
+    //                 var put_url = data['signed_url'];
+    //                 var get_url = data['access_url'];
+    //                 console.log("Received upload url: " + put_url);
+    //                 // Uploads the file, using the low-level interface.
+    //                 var req = new XMLHttpRequest();
+    //                 // We listen to the load event = the file is uploaded, and we call upload_complete.
+    //                 // That function will notify the server of the location of the image. 
+    //                 req.addEventListener("load", self.upload_complete(get_url));
+    //                 // TODO: if you like, add a listener for "error" to detect failure.
+    //                 req.open("PUT", put_url, true);
+    //                 req.send(file);
+    //             });
+    //     }
+    // };
 
-    self.upload_complete = function(get_url) {
-        // Hides the uploader div.
-        self.vue.show_img = true;
-        self.close_uploader();
-        console.log('The file was uploaded; it is now available at ' + get_url);
-        // TODO: The file is uploaded.  Now you have to insert the get_url into the database, etc.
+
+    // self.upload_complete = function(get_url) {
+    //     // Hides the uploader div.
+    //     self.vue.show_img = true;
+    //     self.close_uploader();
+    //     console.log('The file was uploaded; it is now available at ' + get_url);
+    //     // TODO: The file is uploaded.  Now you have to insert the get_url into the database, etc.
+    // };
+
+    self.get_image = function () {
+        $.getJSON(image_get_url, 
+            {
+                blog_post_id: 1,
+            },
+            function (data) {
+                self.vue.received_image = data.image_str;
+            }
+            )
     };
-
 
     self.vue = new Vue({
         el: "#vue-div",
@@ -98,13 +114,15 @@ var app = function() {
         data: {
             is_uploading: false,
             img_url: null,
+            received_image: null,
             show_img: false,
             self_page: true // Leave it to true, so initially you are looking at your own images.
         },
         methods: {
             open_uploader: self.open_uploader,
             close_uploader: self.close_uploader,
-            upload_file: self.upload_file
+            upload_file: self.upload_file,
+            get_image: self.get_image
         }
 
     });
