@@ -97,3 +97,6 @@ logger.setLevel(logging.INFO)
 
 # Let's log the request.
 logger.info("====> Request: %r %r %r %r" % (request.env.request_method, request.env.path_info, request.args, request.vars))
+# Makes the logger available also to modules.
+from gluon import current
+current.logger = logger

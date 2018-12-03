@@ -8,7 +8,6 @@ import Crypto.Hash.SHA256 as SHA256
 import Crypto.PublicKey.RSA as RSA
 import Crypto.Signature.PKCS1_v1_5 as PKCS1_v1_5
 
-from gluon.utils import web2py_uuid
 from gluon import current
 
 def base64sign(plaintext, private_key):
@@ -18,7 +17,6 @@ def base64sign(plaintext, private_key):
     return base64.b64encode(signature_bytes)
 
 GCS_API_ENDPOINT = 'https://storage.googleapis.com'
-BUCKET_NAME = '/luca-teaching-images/'
 
 SIGNATURE_STRING = ('{verb}\n'
                     '{content_md5}\n'
@@ -52,7 +50,7 @@ def sign_url(path, expiration, account_email, keytext,
                                              content_type=content_type,
                                              expiration=expiration,
                                              resource=path)
-    logger.debug("String to sign: %r", string_to_sign)
+    current.logger.debug("String to sign: %r", string_to_sign)
     signature_signed = base64sign(string_to_sign, private_key)
     query_params = {'GoogleAccessId': account_email,
                     'Expires': str(expiration),

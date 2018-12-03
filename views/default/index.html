@@ -5,9 +5,9 @@
 <script src="{{=URL('static', 'js/vue.js')}}"></script>
 <script>
   // Define your URLs here.
-  var get_upload_url = "{{=URL('uploader', 'get_upload_url', user_signature=True)}}";
+  var get_upload_url = "{{=URL('api', 'get_upload_url', user_signature=True)}}";
   var upload_notification_url = "{{=URL('api', 'notify_upload', user_signature=True, hash_vars=False)}}";
-  var get_image_url = "{{=URL('api', 'get_image')}}"; // TODO: fix
+  var get_image_url = "{{=URL('api', 'get_image', user_signature=True, hash_vars=False)}}";
 
 </script>
 
