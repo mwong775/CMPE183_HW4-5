@@ -53,6 +53,10 @@ def _():
             (T('Attack weak'), False, URL('forms', 'attack_weak')),
             (T('attack strong'), False, URL('forms', 'attack_strong')),
         ]),
+        (T('Api'), False, '#', [
+            (T('Attack unsigned'), False, URL('attackapi', 'unsigned')),
+            (T('Attack signed'), False, URL('attackapi', 'signed')),
+        ])
     ]
 
 
