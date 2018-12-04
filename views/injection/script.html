@@ -1,0 +1,21 @@
+{{extend 'layout.html'}}
+
+{{block head}}
+<script src="{{=URL('static', 'js/vue.js')}}"></script>
+<script>
+</script>
+{{end}}
+
+<div class="main_content">
+
+  <div id="vue-div" class="display:none">
+    <h2>In</h2>
+      <input v-model="userinput" placeholder="Type here your content">
+      <button v-on:click="render" class="btn">Show</button>
+    <h2>Out</h2>
+    <p id="useroutput"></p>
+  </div>
+
+</div>
+
+<script src="{{=URL('static', 'js/injection_script.js')}}"></script>

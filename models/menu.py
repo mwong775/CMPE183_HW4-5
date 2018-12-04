@@ -53,6 +53,9 @@ def _():
             (T('Strong form'), False, URL('forms', 'strong_form')),
             (T('Weak form'), False, URL('forms', 'weak_form')),
         ]),
+        (T('Injection'), False, "#", [
+            (T('Script'), False, URL('injection', 'script')),
+        ])
     ]
 
 
