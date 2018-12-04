@@ -4,6 +4,7 @@
 <script src="{{=URL('static', 'js/vue.js')}}"></script>
 <script>
   var apiurl = "{{=URL('injection', 'get_record')}}";
+  var user_email = "{{=auth.user.email if auth.user else 'none'}}";
 </script>
 {{end}}
 
