@@ -35,7 +35,7 @@
         <div v-if="self_page">
           <!-- Code to upload files, with control buttons -->
           <div id="uploader_div" style="display:none">
-            Upload an image file: <input id="file_input" type="file" v-on:change="upload_file" accept="image/jpeg">
+            Upload an image file: <input id="file_input" type="file" v-on:change="upload_file($event, 1)" accept="image/jpeg">
           </div>
 
           <button v-if="!is_uploading" v-on:click="open_uploader"><i class="fa fa-plus"></i></button>

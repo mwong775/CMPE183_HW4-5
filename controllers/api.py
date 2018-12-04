@@ -8,7 +8,7 @@ from gluon.utils import web2py_uuid
 def post_image():
     image_str = request.vars.image_url
     blog_post_id = int(request.vars.blog_post_id)
-    # Normally, here I would have to check that the user can store the 
+    # Normally, here I would have to check that the user can store the
     # image to the blog post, etc etc.
     db.my_images.update_or_insert(
         (db.my_images.blog_post_id == blog_post_id),
@@ -17,6 +17,7 @@ def post_image():
     )
     return "ok"
 
+@auth.requires_signature()
 def get_image():
     blog_post_id = int(request.vars.blog_post_id)
     r = db(db.my_images.blog_post_id == blog_post_id).select().first()
