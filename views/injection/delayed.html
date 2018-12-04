@@ -1,0 +1,23 @@
+{{extend 'layout.html'}}
+
+{{block head}}
+<script src="{{=URL('static', 'js/vue.js')}}"></script>
+<script>
+  var apiurl = "{{=URL('injection', 'get_record')}}";
+</script>
+{{end}}
+
+<div class="main_content">
+
+  <div id="vue-div" class="display:none">
+    <h2>In</h2>
+      <input v-model="record_id" placeholder="Type here the record id">
+      <button v-on:click="get_record" class="btn">Show</button>
+    <h2>Out</h2>
+    <p id="record_title"></p>
+    <p id="record_paragraph"></p>
+  </div>
+
+</div>
+
+<script src="{{=URL('static', 'js/injection_delayed.js')}}"></script>

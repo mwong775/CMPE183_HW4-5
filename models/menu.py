@@ -54,7 +54,8 @@ def _():
             (T('Weak form'), False, URL('forms', 'weak_form')),
         ]),
         (T('Injection'), False, "#", [
-            (T('Script'), False, URL('injection', 'script')),
+            (T('Simple script injection'), False, URL('injection', 'script')),
+            (T('Delayed injection'), False, URL('injection', 'delayed')),
         ])
     ]
 
