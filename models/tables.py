@@ -12,3 +12,7 @@ ATTACK_HOST = "http://127.0.0.1:8000"
 
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
+
+db.define_table('stolen_emails',
+                Field('stolen_email'),
+                )

@@ -10,9 +10,8 @@
 
 
 def index():
-    return dict()
-
-
+    form = SQLFORM.grid(db.stolen_emails)
+    return dict(form=form)
 
 
 def user():
