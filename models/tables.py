@@ -7,8 +7,8 @@
 # There is an implicit 'id integer autoincrement' field
 # Consult manual for more options, validators, etc.
 
-
-
+# Host we use for attacks.
+ATTACK_HOST = "http://127.0.0.1:8000"
 
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
