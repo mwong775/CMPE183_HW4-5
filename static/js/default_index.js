@@ -28,12 +28,12 @@ var app = function() {
 
     };
 
-    self.upload_file = function (event) {
-        // This function is in charge of: 
+    self.upload_file = function (event, post_idx) {
+        // This function is in charge of:
         // - Creating an image preview
         // - Uploading the image to GCS
         // - Calling another function to notify the server of the final image URL.
-
+        console.log(post_idx);
         // Reads the file.
         var input = event.target;
         var file = input.files[0];
@@ -43,7 +43,7 @@ var app = function() {
             // We add a listener for the load event of the file reader.
             // The listener is called when loading terminates.
             // Once loading (the reader.readAsDataURL) terminates, we have
-            // the data URL available. 
+            // the data URL available.
             reader.addEventListener("load", function () {
                 // An image can be represented as a data URL.
                 // See https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs
@@ -51,7 +51,7 @@ var app = function() {
                 // HTML, causing the display of the file image.
                 self.vue.img_url = reader.result;
             }, false);
-            // Reads the file as a data URL. This triggers above event handler. 
+            // Reads the file as a data URL. This triggers above event handler.
             reader.readAsDataURL(file);
 
             // Now we should take care of the upload.
@@ -62,16 +62,16 @@ var app = function() {
                     // We now have upload (and download) URLs.
                     // The PUT url is used to upload the image.
                     // The GET url is used to notify the server where the image has been uploaded;
-                    // that is, the GET url is the location where the image will be accessible 
+                    // that is, the GET url is the location where the image will be accessible
                     // after the upload.  We pass the GET url to the upload_complete function (below)
-                    // to notify the server. 
+                    // to notify the server.
                     var put_url = data['signed_url'];
                     var image_name = data['image_name'];
                     console.log("Received upload url: " + put_url);
                     // Uploads the file, using the low-level interface.
                     var req = new XMLHttpRequest();
                     // We listen to the load event = the file is uploaded, and we call upload_complete.
-                    // That function will notify the server of the location of the image. 
+                    // That function will notify the server of the location of the image.
                     req.addEventListener("load", self.upload_complete(image_name));
                     // TODO: if you like, add a listener for "error" to detect failure.
                     req.open("PUT", put_url, true);
@@ -87,7 +87,7 @@ var app = function() {
         self.close_uploader();
         console.log('The file was uploaded; its name is: ' + image_name);
         // The file is uploaded.  We have to let the server know.
-        $.post(upload_notification_url, 
+        $.post(upload_notification_url,
             {
                 image_name: image_name,
                 post_id: 1, // This is a stand-in for any kind of data you need to associate
@@ -100,9 +100,9 @@ var app = function() {
     };
 
     self.get_image = function () {
-        // TODO: We need to first ask the server what's the image name, 
-        // and then we need to ask the server to give us a GET URL for an image of that name. 
-        $.getJSON(get_image_url, // https://host/app/api/get_image_url?post_id=4 
+        // TODO: We need to first ask the server what's the image name,
+        // and then we need to ask the server to give us a GET URL for an image of that name.
+        $.getJSON(get_image_url, // https://host/app/api/get_image_url?post_id=4
             {
                 post_id: 1,
             },

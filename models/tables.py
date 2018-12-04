@@ -7,9 +7,12 @@
 # There is an implicit 'id integer autoincrement' field
 # Consult manual for more options, validators, etc.
 
+import datetime
+
 db.define_table('uploaded_images',
     Field('image_name'),
     Field('post_id', 'integer'),
+    Field('modif', 'datetime', update=datetime.datetime.utcnow())
 )
 
 

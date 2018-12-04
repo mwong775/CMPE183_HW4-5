@@ -20,6 +20,11 @@ def index():
     return dict()
 
 
+def test_idx():
+    rows = db((db.uploaded_images.post_id == 1) & (db.uploaded_images.modif != None)).select()
+    return "ok"
+
+
 def user():
     """
     exposes:
