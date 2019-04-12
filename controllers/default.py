@@ -10,74 +10,24 @@
 
 import datetime
 
+@auth.requires_login()
+def setup():
+    """Inserts a couple of posts just to bring the database to a known state.
+    This is done for debugging purposes ony, and should not be part of a real web site."""
+    db(db.post).delete()
+    db.post.insert(post_title="First Post",
+                   post_content="Content of first post")
+    db.post.insert(post_title="Second Post",
+                   post_content="Content of second post")
+    # We don't need a view if we don't return a dictionary.
+    return "ok"
+
 def index():
-    """
-    example action using the internationalization operator T and flash
-    rendered by views/default/index.html or views/generic.html
-
-    if you need a simple wiki simply replace the two lines below with:
-    return auth.wiki()
-    """
-
-    if session.c is None:
-        session.c = 1
-    else:
-        session.c += 1
-
-    rows = db(db.post.id > 0).select()
-
+    """Displays the list of rows"""
+    rows = db(db.post).select()
     return dict(
-        message=T('Welcome to web2py!'),
-        ctime=datetime.datetime.now().isoformat(),
-        visit_count=session.c,
         rows=rows,
     )
-
-def index_inefficient():
-    """
-    example action using the internationalization operator T and flash
-    rendered by views/default/index.html or views/generic.html
-
-    if you need a simple wiki simply replace the two lines below with:
-    return auth.wiki()
-    """
-
-    if session.c is None:
-        session.c = 1
-    else:
-        session.c += 1
-
-    rows = db(db.post.id > 0).select()
-
-    result = []
-    for r in rows:
-        starred = (False if auth.user is None else
-            db((db.star.post_id == r.id) & (db.star.user_id == auth.user.id)).select().first() is not None)
-        result.append(dict(
-            post_title=r.post_title,
-            post_author=r.post_author,
-            post_content=r.post_content,
-            starred=starred,
-            id=r.id,
-        ))
-    logger.info("Result: %r" % result)
-    return dict(rows=result)
-
-
-@auth.requires_signature()
-@auth.requires_login()
-def toggle_star():
-    star_record = db((db.star.post_id == int(request.args[0])) &
-        (db.star.user_id == auth.user_id)).select().first()
-    if star_record is not None:
-        # Removes star.
-        db(db.star.id == star_record.id).delete()
-    else:
-        # Adds the star.
-        db.star.insert(
-            user_id = auth.user.id,
-            post_id = int(request.args[0]))
-    redirect(URL('default', 'index_inefficient'))
 
 
 @auth.requires_login()
@@ -149,18 +99,6 @@ def add3():
 def edit():
     """Allows editing of a post.  URL form: /default/edit/<n> where n is the post id."""
 
-    # if len(request.args) == 0:
-    #     raise HTTP(500)
-    # try:
-    #     int_id = int(request.args[0])
-    # except:
-    #     raise HTTP(500)
-    # rows = db(db.post.id == int_id).select()
-    # for r in rows:
-    #     post = r
-    #     break
-    # # Now we have post.
-
     # For this controller only, we hide the author.
     db.post.post_author.readable = False
 
@@ -196,20 +134,20 @@ def delete():
     db(db.post.id == post.id).delete()
     redirect(URL('default', 'index'))
 
-
-# @auth.requires_login()
-# def edit1():
-#     post_id = request.vars.id # This matches the vars=dict(id=...) in index.html
-#     post = db.post(post_id)
-#     # We must validate everything we receive.
-#     if post is None:
-#         logging.info("Invalid edit call")
-#         redirect(URL('default', 'index'))
-#     form = SQLFORM.factory(
-#         Field('post_title'),
-#         Field('post_content', 'text'),
-#     )
-
+@auth.requires_signature()
+@auth.requires_login()
+def toggle_star():
+    star_record = db((db.star.post_id == int(request.args[0])) &
+        (db.star.user_id == auth.user_id)).select().first()
+    if star_record is not None:
+        # Removes star.
+        db(db.star.id == star_record.id).delete()
+    else:
+        # Adds the star.
+        db.star.insert(
+            user_id = auth.user.id,
+            post_id = int(request.args[0]))
+    redirect(URL('default', 'index_inefficient'))
 
 
 

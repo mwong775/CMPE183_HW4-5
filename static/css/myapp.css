@@ -8,3 +8,12 @@ div.main_content div.post {
   background-color: #dddddd;
   margin: 10px;
 }
+
+/* line 12, ../sass/_main.scss */
+form table.input_table {
+  width: 100%;
+}
+/* line 14, ../sass/_main.scss */
+form table.input_table tr:last-child {
+  border-bottom: none;
+}

@@ -8,3 +8,10 @@ div.main_content {
   }
 
 }
+
+form table.input_table {
+  width: 100%;
+  tr:last-child {
+    border-bottom: none;
+  }
+}
