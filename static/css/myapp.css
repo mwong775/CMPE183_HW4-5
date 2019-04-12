@@ -6,14 +6,17 @@ div.main_content {
 div.main_content div.post {
   border: 2px solid black;
   background-color: #dddddd;
-  margin: 10px;
+  padding: 10px;
 }
-
-/* line 12, ../sass/_main.scss */
-form table.input_table {
+/* line 9, ../sass/_main.scss */
+div.main_content div.post div.button_row {
+  margin-top: 15px;
+}
+/* line 17, ../sass/_main.scss */
+div.main_content form table.input_table {
   width: 100%;
 }
-/* line 14, ../sass/_main.scss */
-form table.input_table tr:last-child {
+/* line 19, ../sass/_main.scss */
+div.main_content form table.input_table tr:last-child {
   border-bottom: none;
 }
