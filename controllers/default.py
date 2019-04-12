@@ -10,14 +10,20 @@
 
 import datetime
 
+class Post(object):
+    """Simple class to create synthetic posts"""
+    def __init__(self):
+        pass
 
 def simple_index():
     """Unlike the real index, this does not take data from the database."""
-    post1 = object()
+    post1 = Post()
+    post1.id = 1
     post1.post_title = "Synthetic post 1 title"
     post1.post_content = "Synthetic post 1 content"
     post1.post_author = "luca@ucsc.edu"
-    post2 = object()
+    post2 = Post()
+    post2.id = 2
     post2.post_title = "Synthetic post 2 title"
     post2.post_content = "Synthetic post 2 content"
     post2.post_author = "luca@ucsc.edu"
