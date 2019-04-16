@@ -15,6 +15,11 @@ class Post(object):
     def __init__(self):
         pass
 
+def attacker():
+    """This controller simply produces the attack page for Form 1.
+    The interesting bits are found in the corresponding view."""
+    return dict()
+
 def simple_index():
     """Unlike the real index, this does not take data from the database."""
     post1 = Post()
