@@ -161,6 +161,13 @@ def view2():
     return dict(post=post)
 
 
+def urls():
+    # request.args[1]
+    # request.vars.person
+    return dict()
+
+
+# /start/default/delete/2
 @auth.requires_signature()
 @auth.requires_login()
 def delete():

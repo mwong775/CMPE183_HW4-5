@@ -8,3 +8,5 @@ uploads/*
 .sass-cache
 .sass-cache/*
 
+private/gcs_keys.json
+.vscode/settings.json
