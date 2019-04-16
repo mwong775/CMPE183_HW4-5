@@ -119,6 +119,9 @@ def add3():
     return dict(form=form)
 
 
+
+
+
 # We require login.
 @auth.requires_login()
 def edit():
@@ -126,6 +129,8 @@ def edit():
 
     # For this controller only, we hide the author.
     db.post.post_author.readable = False
+
+    # post = db(db.post.id == int(request.args[0])).select().first()
 
     post = db.post(request.args(0))
     # We must validate everything we receive.
