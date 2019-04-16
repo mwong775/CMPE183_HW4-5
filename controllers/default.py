@@ -22,11 +22,13 @@ def simple_index():
     post1.post_title = "Synthetic post 1 title"
     post1.post_content = "Synthetic post 1 content"
     post1.post_author = "luca@ucsc.edu"
+    post1.post_time = datetime.datetime.utcnow()
     post2 = Post()
     post2.id = 2
     post2.post_title = "Synthetic post 2 title"
     post2.post_content = "Synthetic post 2 content"
     post2.post_author = "luca@ucsc.edu"
+    post2.post_time = datetime.datetime.utcnow()
     return dict(
         rows=[post1, post2]
     )
@@ -36,13 +38,14 @@ def simple_index():
 def setup():
     """Inserts a couple of posts just to bring the database to a known state.
     This is done for debugging purposes ony, and should not be part of a real web site."""
-    db(db.post).delete()
+    db(db.post).delete() # Deletes the content of the post table.
     db.post.insert(post_title="First Post",
                    post_content="Content of first post")
     db.post.insert(post_title="Second Post",
                    post_content="Content of second post")
     # We don't need a view if we don't return a dictionary.
     return "ok"
+
 
 def index():
     """Displays the list of rows"""

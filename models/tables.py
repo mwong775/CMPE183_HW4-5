@@ -19,8 +19,8 @@ def get_current_time():
 
 db.define_table('post',
                 Field('post_author', default=get_user_email()),
-                Field('post_title'),
-                Field('post_content', 'text'),
+                Field('post_title'), # At most 512 characters
+                Field('post_content', 'text'), # "unlimited"
                 Field('post_time', 'datetime', update=get_current_time()),
                 )
 
