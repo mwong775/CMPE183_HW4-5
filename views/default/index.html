@@ -23,6 +23,8 @@
     <div class="title">Title: {{=r.post_title}}</div>
     <div class="content">Content: {{=r.post_content}}</div>
     <div class="button_row">
+      <a href="{{=URL('default', 'view1', args=[r.id])}}" class="btn">View 1</a>
+      <a href="{{=URL('default', 'view2', args=[r.id])}}" class="btn">View 2</a>
     {{if auth.user is not None and auth.user.email == r.post_author:}}
       <a href="{{=URL('default', 'edit', args=[r.id])}}", class="btn"><i class="fa fa-pencil-square-o"></i> Edit</a>
       {{=A('Edit', _href=URL('default', 'edit1', vars=dict(id=r.id)), _class='btn')}}

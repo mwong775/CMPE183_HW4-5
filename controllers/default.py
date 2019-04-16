@@ -148,6 +148,18 @@ def edit():
         redirect(URL('default', 'index'))
     return dict(form=form)
 
+def view1():
+    post = db.post(request.args(0))
+    if post is None:
+        redirect(URL('default', 'index'))
+    form = SQLFORM(db.post, record = post, readonly=True)
+    return dict(form=form)
+
+
+def view2():
+    post = db.post(request.args(0))
+    return dict(post=post)
+
 
 @auth.requires_signature()
 @auth.requires_login()
