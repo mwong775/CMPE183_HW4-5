@@ -203,7 +203,7 @@ def viewall():
     grid = SQLFORM.grid(
         query, 
         field_id = db.post.id, # Useful, not mandatory.
-        fields = [db.post.id, db.post.post_title, 
+        fields = [db.post.id, db.post.post_title, db.post.view_count,
                     db.post.post_author, db.post.post_time], 
         links = links,
         # And now some generic defaults.
@@ -220,7 +220,9 @@ def view_in_grid():
     post = db.post(request.args(0))
     if post is None:
         redirect(URL('default', 'index'))
+    post.view_count = 1 if post.view_count is None else post.view_count + 1
     form = SQLFORM(db.post, record = post, readonly=True)
+    post.update_record()
     return dict(form=form)
 
 @auth.requires_signature()
