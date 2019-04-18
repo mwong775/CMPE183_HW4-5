@@ -166,6 +166,12 @@ def viewall():
     #     )
     # )
 
+    # Let's get rid of some fields in the add form.
+    # Are we in the add form?
+    if len(request.args) > 0 and request.args[0] == 'new':
+        db.post.post_author.readable = False
+        db.post.post_time.readable = False
+
     # Grid definition.
     grid = SQLFORM.grid(
         query, 
@@ -175,7 +181,7 @@ def viewall():
         links = links,
         # And now some generic defaults.
         details=False,
-        create=False, editable=False, deletable=False,
+        create=True, editable=False, deletable=False,
         csv=False, 
         user_signature=False, # We don't need it as one cannot take actions directly from the form.
     )
