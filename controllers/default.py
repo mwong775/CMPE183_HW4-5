@@ -158,15 +158,23 @@ def viewall():
 
     # List of additional links.
     links = []
+    # links.append(
+    #     dict(header='',
+    #          body = lambda row : 
+    #          A('View', _href=URL('default', 'view_in_grid', args=[row.id], user_signature=True),
+    #          _class='btn')
+    #     )
+    # )
 
     # Grid definition.
     grid = SQLFORM.grid(
         query, 
         field_id = db.post.id, # Useful, not mandatory.
-        fields = [db.post.id, db.post.post_title, db.post.post_author, db.post.post_time], 
+        fields = [db.post.id, db.post.post_title, 
+                    db.post.post_author, db.post.post_time], 
         links = links,
         # And now some generic defaults.
-        details=True,
+        details=False,
         create=False, editable=False, deletable=False,
         csv=False, 
         user_signature=False, # We don't need it as one cannot take actions directly from the form.

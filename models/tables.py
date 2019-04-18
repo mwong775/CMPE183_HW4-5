@@ -24,9 +24,12 @@ db.define_table('post',
                 Field('post_time', 'datetime', update=get_current_time()),
                 )
 
-db.post.post_time.readable = db.post.post_time.writable = False
+db.post.post_time.readable = True
+db.post.post_time.writable = False
 db.post.post_author.writable = False
 db.post.id.readable = False
+db.post.post_title.label = T('Title')
+db.post.post_author.label = T('Author email')
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
 
