@@ -158,13 +158,14 @@ def viewall():
 
     # List of additional links.
     links = []
-    # links.append(
-    #     dict(header='',
-    #          body = lambda row : 
-    #          A('View', _href=URL('default', 'view_in_grid', args=[row.id], user_signature=True),
-    #          _class='btn')
-    #     )
-    # )
+    links.append(
+        dict(header='',
+             body = lambda row : 
+             SPAN(A(I(_class='fa fa-eye'), ' ', 'View', _href=URL('default', 'view_in_grid', args=[row.id], user_signature=True),
+                    _class='btn'),
+                _class="haha")
+        )
+    )
 
     # Let's get rid of some fields in the add form.
     # Are we in the add form?
@@ -182,8 +183,8 @@ def viewall():
         # And now some generic defaults.
         details=False,
         create=True, editable=False, deletable=False,
-        csv=False, 
-        user_signature=False, # We don't need it as one cannot take actions directly from the form.
+        csv=True, 
+        user_signature=True, # We don't need it as one cannot take actions directly from the form.
     )
     return dict(grid=grid)
 
