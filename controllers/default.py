@@ -151,6 +151,15 @@ def edit():
     return dict(form=form)
 
 
+def produce_funny_button(row):
+    if 'user' in row.post_title:
+        return A(I(_class='fa fa-eye'), ' ', 'View user post', 
+                    _href=URL('default', 'view_in_grid', args=[row.id], user_signature=True),
+                    _class='btn')
+    else:
+        return SPAN(auth.user.email if auth.user is not None else 'bleh', _class='red')
+
+
 def viewall():
     """This controller uses a grid to display all posts."""
     # I like to define the query separately.
@@ -161,9 +170,26 @@ def viewall():
     links.append(
         dict(header='',
              body = lambda row : 
-             SPAN(A(I(_class='fa fa-eye'), ' ', 'View', _href=URL('default', 'view_in_grid', args=[row.id], user_signature=True),
+             SPAN(A(I(_class='fa fa-eye'), ' ', 'View', 
+                    _href=URL('default', 'view_in_grid', args=[row.id], user_signature=True),
                     _class='btn'),
                 _class="haha")
+        )
+    )
+
+    links.append(
+        dict(header='',
+             body = lambda row : 
+             SPAN(A(I(_class='fa fa-eye'), ' ', 'View', 
+                    _href=URL('default', 'view_in_grid_v', vars=dict(id=row.id), user_signature=True),
+                    _class='btn'),
+                _class="haha")
+        )
+    )
+
+    links.append(
+        dict(header = "Optional",
+            body = lambda row : produce_funny_button(row)
         )
     )
 
@@ -187,6 +213,25 @@ def viewall():
         user_signature=True, # We don't need it as one cannot take actions directly from the form.
     )
     return dict(grid=grid)
+
+
+@auth.requires_signature()
+def view_in_grid():
+    post = db.post(request.args(0))
+    if post is None:
+        redirect(URL('default', 'index'))
+    form = SQLFORM(db.post, record = post, readonly=True)
+    return dict(form=form)
+
+@auth.requires_signature()
+def view_in_grid_v():
+    post = db.post(request.vars.id)
+    if post is None:
+        redirect(URL('default', 'index'))
+    form = SQLFORM(db.post, record = post, readonly=True)
+    return dict(form=form)
+
+
 
 
 def view1():
