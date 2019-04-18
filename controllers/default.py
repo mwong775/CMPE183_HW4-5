@@ -193,6 +193,11 @@ def viewall():
         )
     )
 
+    links.append(
+        dict(header="Rightback", body = lambda row : A('rb', _class='btn', 
+            _href=URL('default', 'rightback', args=[row.id], user_signature=True)))
+    )
+
     # Let's get rid of some fields in the add form.
     # Are we in the add form?
     if len(request.args) > 0 and request.args[0] == 'new':
@@ -213,6 +218,16 @@ def viewall():
         user_signature=True, # We don't need it as one cannot take actions directly from the form.
     )
     return dict(grid=grid)
+
+
+@auth.requires_signature()
+def rightback():
+    post = db.post(request.args(0))
+    if post is None:
+        redirect(URL('default', 'index'))
+    post.view_count = 1 if post.view_count is None else post.view_count + 1
+    post.update_record()
+    return redirect(URL('default', 'viewall'))
 
 
 @auth.requires_signature()
