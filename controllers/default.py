@@ -124,9 +124,6 @@ def add3():
     return dict(form=form)
 
 
-
-
-
 # We require login.
 @auth.requires_login()
 def edit():
@@ -152,6 +149,30 @@ def edit():
         # The deed is done.
         redirect(URL('default', 'index'))
     return dict(form=form)
+
+
+def viewall():
+    """This controller uses a grid to display all posts."""
+    # I like to define the query separately.
+    query = db.post
+
+    # List of additional links.
+    links = []
+
+    # Grid definition.
+    grid = SQLFORM.grid(
+        query, 
+        field_id = db.post.id, # Useful, not mandatory.
+        fields = [db.post.id, db.post.post_title, db.post.post_author, db.post.post_time], 
+        links = links,
+        # And now some generic defaults.
+        details=True,
+        create=False, editable=False, deletable=False,
+        csv=False, 
+        user_signature=False, # We don't need it as one cannot take actions directly from the form.
+    )
+    return dict(grid=grid)
+
 
 def view1():
     post = db.post(request.args(0))
