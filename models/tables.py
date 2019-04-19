@@ -32,6 +32,7 @@ db.post.id.readable = False
 db.post.post_title.label = T('Title')
 db.post.post_author.label = T('Author email')
 db.post.view_count.represent = lambda v, r : v if v is not None else 0
+db.post.view_count.requires = IS_INT_IN_RANGE(0, 1000)
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
 

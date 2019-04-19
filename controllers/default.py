@@ -145,10 +145,19 @@ def edit():
         redirect(URL('default', 'index'))
     # Now we must generate a form that allows editing the post.
     form = SQLFORM(db.post, record=post)
-    if form.process().accepted:
+    if form.process(onvalidation=mychecks).accepted:
         # The deed is done.
         redirect(URL('default', 'index'))
     return dict(form=form)
+
+
+def mychecks(form):
+    """Performs form validation.  
+    See http://www.web2py.com/books/default/chapter/29/07/forms-and-validators#onvalidation 
+    for details."""
+    # form.vars contains what the user put in.
+    if form.vars.view_count % 2 == 1:
+        form.errors.view_count = "I am sorry but it's odd that you wrote %d" % form.vars.view_count
 
 
 def produce_funny_button(row):
@@ -187,6 +196,15 @@ def viewall():
         )
     )
 
+    links.append(
+        dict(header='',
+             body = lambda row : 
+             SPAN(A('Edit', 
+                    _href=URL('default', 'edit', args=[row.id], user_signature=True),
+                    _class='btn'),
+                _class="haha")
+        )
+    )
     links.append(
         dict(header = "Optional",
             body = lambda row : produce_funny_button(row)
