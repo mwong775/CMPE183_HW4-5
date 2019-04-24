@@ -129,6 +129,9 @@ def add3():
 def edit():
     """Allows editing of a post.  URL form: /default/edit/<n> where n is the post id."""
 
+    # Here there is request.vars.post_title
+    logger.info("type: %r" % type(request.vars.view_count))
+
     # For this controller only, we hide the author.
     db.post.post_author.readable = False
 
@@ -137,15 +140,17 @@ def edit():
     post = db.post(request.args(0))
     # We must validate everything we receive.
     if post is None:
-        logging.info("Invalid edit call")
+        logger.info("Invalid edit call")
         redirect(URL('default', 'index'))
     # One can edit only one's own posts.
     if post.post_author != auth.user.email:
-        logging.info("Attempt to edit some one else's post by: %r" % auth.user.email)
+        logger.info("Attempt to edit some one else's post by: %r" % auth.user.email)
         redirect(URL('default', 'index'))
     # Now we must generate a form that allows editing the post.
     form = SQLFORM(db.post, record=post)
     if form.process(onvalidation=mychecks).accepted:
+        logger.info("The title is: %r" % form.vars.post_title)
+        logger.info("Count: %d" % form.vars.view_count)
         # The deed is done.
         redirect(URL('default', 'index'))
     return dict(form=form)
@@ -207,13 +212,15 @@ def viewall():
     )
     links.append(
         dict(header = "Optional",
-            body = lambda row : produce_funny_button(row)
+            body = produce_funny_button # lambda row : produce_funny_button(row)
         )
     )
 
     links.append(
         dict(header="Rightback", body = lambda row : A('rb', _class='btn', 
-            _href=URL('default', 'rightback', args=[row.id], user_signature=True)))
+            _href=URL('default', 'rightback', args=[row.id], 
+                        vars= {} if request.vars.page is None else dict(page=request.vars.page),
+                        user_signature=True)))
     )
 
     # Let's get rid of some fields in the add form.
@@ -233,6 +240,7 @@ def viewall():
         details=False,
         create=True, editable=False, deletable=False,
         csv=True, 
+        paginate=2,
         user_signature=True, # We don't need it as one cannot take actions directly from the form.
     )
     return dict(grid=grid)
@@ -245,7 +253,10 @@ def rightback():
         redirect(URL('default', 'index'))
     post.view_count = 1 if post.view_count is None else post.view_count + 1
     post.update_record()
-    return redirect(URL('default', 'viewall'))
+    if request.vars.page is not None:
+        return redirect(URL('default', 'viewall', vars=dict(page=request.vars.page)))
+    else:
+        return redirect(URL('default', 'viewall'))
 
 
 @auth.requires_signature()
