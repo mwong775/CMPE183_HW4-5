@@ -8,6 +8,21 @@
 # Consult manual for more options, validators, etc.
 
 
+db.define_table('product',
+    Field('product_name'),
+    Field('product_quantity'),
+    Field('sales_price', 'float'),
+)
+
+db.define_table('profile',
+    # Complete
+
+)
+
+db.define_table('orders',
+    # Complete
+
+)
 
 
 # after defining tables, uncomment below to enable auditing
