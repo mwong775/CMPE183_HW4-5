@@ -10,7 +10,7 @@
 
 db.define_table('product',
     Field('product_name'),
-    Field('product_quantity'),
+    Field('product_quantity', 'integer'),
     Field('sales_price', 'float'),
 )
 
