@@ -14,6 +14,9 @@ db.define_table('product',
     Field('sales_price', 'float'),
 )
 
+def get_product_name(p):
+    return None if p is None else p.product_name
+
 db.define_table('profile',
     # Complete
 
