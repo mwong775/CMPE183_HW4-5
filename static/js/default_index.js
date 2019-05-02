@@ -71,6 +71,8 @@ var app = function() {
             Vue.set(e, '_smile', e.like);
             // Who liked it?
             Vue.set(e, '_likers', []);
+            // Do I know who liked it? (This could also be a timestamp to limit refresh)
+            Vue.set(e, '_likers_known', false);
             // Do I show who liked? 
             Vue.set(e, '_show_likers', false);
         });
@@ -80,9 +82,12 @@ var app = function() {
     self.show_likers = function(post_idx) {
         var p = self.vue.post_list[post_idx];
         p._show_likers = true;
-        $.getJSON(get_likers_url, {post_id: p.id}, function (data) {
-            p._likers = data.likers
-        });
+        if (!p._likers_known) {
+            $.getJSON(get_likers_url, {post_id: p.id}, function (data) {
+                p._likers = data.likers
+                p._likers_known = true;
+            })
+        }
     };
 
     self.hide_likers = function(post_idx) {
@@ -102,11 +107,16 @@ var app = function() {
         // The like status is toggled; the UI is not changed.
         var p = self.vue.post_list[post_idx];
         p.like = !p.like;
+        // We force a refresh.
+        p._likers_known = false;
         // We need to post back the change to the server.
         $.post(set_like_url, {
             post_id: p.id,
             like: p.like
-        }); // Nothing to do upon completion.
+        },
+        function (data) {
+            self.show_likers(post_idx);
+        });
     };
 
     self.like_mouseout = function (post_idx) {
