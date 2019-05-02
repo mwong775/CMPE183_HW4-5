@@ -116,6 +116,7 @@ var app = function() {
         },
         function (data) {
             self.show_likers(post_idx);
+            p._smile = !p.like;
         });
     };
 
