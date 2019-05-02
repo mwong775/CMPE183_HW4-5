@@ -5,8 +5,8 @@
 def add_post():
     """Adds a post."""
     db.post.insert(
-        title=request.vars.title,
-        content=request.vars.content,
+        form_title=request.vars.form_title,
+        form_content=request.vars.form_content,
     )
     return("ok") # We could also return something else, but this will be good enough.
 

@@ -10,6 +10,10 @@
 
 <div class="main_content">
 
+    {{if auth.user is None:}}
+    <p>You need to log in to see anything.</p>
+    {{pass}}
+
     <div id="vue-div" class="display:none">
       <!-- Your code goes here.  Remember to call $("#vue-div").show() once you get the data for the first time. -->
 
