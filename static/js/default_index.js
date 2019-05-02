@@ -18,8 +18,8 @@ var app = function() {
         $.post(add_post_url,
             // Data we are sending.
             {
-                form_title: self.vue.form_title,
-                form_content: self.vue.form_content
+                post_title: self.vue.form_title,
+                post_content: self.vue.form_content
             },
             // What do we do when the post succeeds?
             function (data) {
