@@ -46,7 +46,7 @@ def get_post_list():
     return response.json(dict(post_list=results))
     
 
-@auth.requires_signature()
+@auth.requires_signature(hash_vars=False)
 def set_like():
     post_id = int(request.vars.post_id)
     like_status = request.vars.like.lower().startswith('t');
@@ -72,7 +72,7 @@ def get_likers():
     # We return this list as a dictionary field, to be consistent with all other calls.
     return response.json(dict(likers=likers_list))
 
-
+@auth.requires_signature(hash_vars=False)
 def set_stars():
     """Sets the star rating of a post."""
     post_id = int(request.vars.post_id)
