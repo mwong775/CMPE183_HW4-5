@@ -41,7 +41,7 @@ var app = function() {
                 };
                 self.vue.post_list.unshift(new_post);
                 // We re-enumerate the array.
-                enumerate(self.vue.post_list);
+                self.process_posts();
             });
         // If you put code here, it is run BEFORE the call comes back.
     };
@@ -52,11 +52,50 @@ var app = function() {
                 // I am assuming here that the server gives me a nice list
                 // of posts, all ready for display.
                 self.vue.post_list = data.post_list;
-                // We enumerate the posts, adding an _idx to each of them.
-                enumerate(self.vue.post_list);
+                // Post-processing.
+                self.process_posts();
             }
         );
     }
+
+    self.process_posts = function() {
+        // This function is used to post-process posts, after the list has been modified
+        // or after we have gotten new posts. 
+        // We add the _idx attribute to the posts. 
+        enumerate(self.vue.post_list);
+        // We initialize the smile status to match the like. 
+        self.vue.post_list.map(function (e) {
+            // I need to use Vue.set here, because I am adding a new watched attribute
+            // to an object.  See https://vuejs.org/v2/guide/list.html#Object-Change-Detection-Caveats
+            Vue.set(e, '_smile', e.like);
+        });
+    }
+
+    // Smile change code. 
+    self.like_mouseover = function (post_idx) {
+        // When we mouse over something, the face has to assume the opposite
+        // of the current state, to indicate the effect. 
+        var p = self.vue.post_list[post_idx];
+        p._smile = !p.like;
+    }
+
+    self.like_click = function (post_idx) {
+        // The like status is toggled; the UI is not changed.
+        var p = self.vue.post_list[post_idx];
+        p.like = !p.like;
+        // We need to post back the change to the server.
+        $.post(set_like_url, {
+            post_id: p.id,
+            like: p.like
+        }); // Nothing to do upon completion.
+    }
+
+    self.like_mouseout = function (post_idx) {
+        // The like and smile status coincide again.
+        var p = self.vue.post_list[post_idx];
+        p._smile = p.like;
+    }
+
 
     // Complete as needed.
     self.vue = new Vue({
@@ -69,7 +108,11 @@ var app = function() {
             post_list: []
         },
         methods: {
-            add_post: self.add_post
+            add_post: self.add_post,
+            // Smile. 
+            like_mouseover: self.like_mouseover,
+            like_mouseout: self.like_mouseout,
+            like_click: self.like_click
         }
 
     });
