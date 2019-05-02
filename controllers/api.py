@@ -67,10 +67,7 @@ def get_likers():
     # We get directly the list of all the users who liked the post. 
     rows = db(db.user_like.post_id == post_id).select(db.user_like.user_email)
     # If the user is logged in, we remove the user from the set.
-    likers_set = set([r.user_email for r in rows])
-    if auth.user:
-        likers_set -= {auth.user.email}
-    likers_list = list(likers_set)
+    likers_list = [r.user_email for r in rows]
     likers_list.sort()
     # We return this list as a dictionary field, to be consistent with all other calls.
     return response.json(dict(likers=likers_list))

@@ -71,8 +71,6 @@ var app = function() {
             Vue.set(e, '_smile', e.like);
             // Who liked it?
             Vue.set(e, '_likers', []);
-            // Do I know who liked it? (This could also be a timestamp to limit refresh)
-            Vue.set(e, '_likers_known', false);
             // Do I show who liked? 
             Vue.set(e, '_show_likers', false);
         });
@@ -82,12 +80,9 @@ var app = function() {
     self.show_likers = function(post_idx) {
         var p = self.vue.post_list[post_idx];
         p._show_likers = true;
-        if (!p._likers_known) {
-            $.getJSON(get_likers_url, {post_id: p.id}, function (data) {
-                p._likers = data.likers
-                p._likers_known = true;
-            })
-        }
+        $.getJSON(get_likers_url, {post_id: p.id}, function (data) {
+            p._likers = data.likers
+        });
     };
 
     self.hide_likers = function(post_idx) {
