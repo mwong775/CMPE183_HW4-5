@@ -13,8 +13,11 @@
         <!-- Your code goes here.  Remember to call $("#vue-div").show() once you get the data for the first time. -->
 
         <div>
-          ${salutation}
+          <p>${salutation}</p>
+          <button class='btn' v-on:click="change_salutation">${sal_button}</button>
         </div>
+        
+
 
       <div>
         <ul>

@@ -28,10 +28,23 @@ var app = function() {
         $.getJSON(
             initial_data_url,
             function (data) {
+                console.log("Reply from the server");
                 self.vue.animal_list = data.animals;
                 self.vue.thing_list = data.things;
             }
-            );
+        );
+        console.log("I just sent my server request.");
+    };
+
+    self.change_salutation = function () {
+        console.log("changing salutation");
+        if (self.vue.salutation === 'hello') {
+            self.vue.salutation = 'ciao';
+            self.vue.sal_button = 'English';
+        } else {
+            self.vue.salutation = 'hello';
+            self.vue.sal_button = 'Italian';
+        }
     };
 
     // Complete as needed.
@@ -41,11 +54,13 @@ var app = function() {
         unsafeDelimiters: ['!{', '}'],
         data: {
             salutation: 'hello',
+            sal_button: 'Italian',
             thing_list: [],
             animal_list: [],
             is_plus: true
         },
         methods: {
+            change_salutation: self.change_salutation,
             toggle_plus: self.toggle_plus
         }
     });
