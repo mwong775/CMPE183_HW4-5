@@ -29,7 +29,7 @@ def create_order():
     profile = db(db.profile.email == auth.user.email).select().first()
     if profile is None:
         redirect(URL('default', 'profile',
-                     vars=dict(next=URL('default', 'create_order', args=[product_id]),
+                     vars=dict(next=URL('default', 'create_order', args=[product.id]),
                                edit='y')))
     # Ok, here you know the profile exists.
     # Sets the default for the order to be created. 
