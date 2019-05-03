@@ -81,7 +81,7 @@ def view_product():
     if p is None:
         form = P('No such product')
     else:
-        form = SQLFORM(db.product, p, viewonly=True)
+        form = SQLFORM(db.product, p, readonly=True)
     return dict(form=form)
 
 

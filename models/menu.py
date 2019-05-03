@@ -51,7 +51,7 @@ def _():
     response.menu += [
         (T('My Sites'), False, URL('admin', 'default', 'site')),
         (T('View profile'), False, URL('default', 'profile')),
-        (T('Edit profile'), False, URL('default', 'profile', vars=dict(edit=True))),
+        (T('Edit profile'), False, URL('default', 'profile', vars=dict(edit='y'))),
         (T('Store'), False, URL('default', 'store')),
         (T('Order list'), False, URL('default', 'order_list')),
 
