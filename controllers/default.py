@@ -33,9 +33,9 @@ def create_order():
                                edit='y')))
     # Ok, here you know the profile exists.
     # Sets the default for the order to be created. 
-    db.orders.product_id.default = product.id
-    db.orders.user.default = auth.user.email
-    db.orders.order_date.default = datetime.datetime.utcnow()
+    db.order.product_id.default = product.id
+    db.order.user.default = auth.user.email
+    db.order.order_date.default = datetime.datetime.utcnow()
     # Complete.  You have to create a form for inserting an order, and process/return it. 
     return dict()
 
