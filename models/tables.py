@@ -22,7 +22,7 @@ db.define_table('profile',
 
 )
 
-db.define_table('orders',
+db.define_table('order',
     # Complete
 
 )

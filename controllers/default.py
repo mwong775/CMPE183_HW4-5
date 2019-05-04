@@ -67,9 +67,9 @@ def profile():
 def order_list():
     """Page to display the list of orders."""
     # Fixes visualization of email and product.  I hope this works, it should give you the idea at least.
-    db.product_order.user_email.represent = lambda v, r : A(v, _href=URL('default', 'profile', vars=dict(email=v)))
-    db.product_order.product_id.represent = lambda v, r : A(get_product_name(db.product(v)), _href=URL('default', 'view_product', args=[v]))
-    grid = SQLFORM.grid(db.product_order,
+    db.order.user_email.represent = lambda v, r : A(v, _href=URL('default', 'profile', vars=dict(email=v)))
+    db.order.product_id.represent = lambda v, r : A(get_product_name(db.product(v)), _href=URL('default', 'view_product', args=[v]))
+    grid = SQLFORM.grid(db.order,
         # Complete if needed.
     )
     return dict(grid=grid)
