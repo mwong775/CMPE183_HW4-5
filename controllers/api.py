@@ -1,5 +1,6 @@
 # Here go your api methods.
 
+import json
 
 @auth.requires_signature()
 def add_post():
@@ -48,8 +49,9 @@ def get_post_list():
 
 @auth.requires_signature()
 def set_like():
-    post_id = int(request.vars.post_id)
-    like_status = request.vars.like.lower().startswith('t');
+    data = json.loads(request.vars.data)
+    post_id = data['post_id']
+    like_status = data['like']
     if like_status:
         db.user_like.update_or_insert(
             (db.user_like.post_id == post_id) & (db.user_like.user_email == auth.user.email),

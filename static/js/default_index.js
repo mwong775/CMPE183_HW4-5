@@ -15,6 +15,12 @@ var app = function() {
     // Enumerates an array.
     var enumerate = function(v) { var k=0; return v.map(function(e) {e._idx = k++;});};
 
+    var better_enumerate = function (v) {
+        for (var k = 0; k < v.length; k++) {
+            v[k]._idx = k;
+        }
+    }
+
     self.add_post = function () {
         // We disable the button, to prevent double submission.
         $.web2py.disableElement($("#add-post"));
@@ -85,8 +91,10 @@ var app = function() {
         p.like = !p.like;
         // We need to post back the change to the server.
         $.post(set_like_url, {
-            post_id: p.id,
-            like: p.like
+            data: JSON.stringify({
+                post_id: p.id,
+                like: p.like
+            })
         }); // Nothing to do upon completion.
     }
 
