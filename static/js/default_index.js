@@ -78,29 +78,32 @@ var app = function() {
         });
     };
 
-    // Code for getting and displaying the list of likers. 
-    self.show_likers = function(post_idx) {
-        var p = self.vue.post_list[post_idx];
-        p._show_likers = true;
-        if (!p._likers_known) {
-            $.getJSON(get_likers_url, {post_id: p.id}, function (data) {
-                p._likers = data.likers
-                p._likers_known = true;
-            })
-        }
-    };
-
+    
     self.hide_likers = function(post_idx) {
         var p = self.vue.post_list[post_idx];
         p._show_likers = false;
     };
-
+    
     // Smile change code. 
     self.like_mouseover = function (post_idx) {
         // When we mouse over something, the face has to assume the opposite
         // of the current state, to indicate the effect.
         var p = self.vue.post_list[post_idx];
         p._smile = !p.like;
+    };
+    
+    // Code for getting and displaying the list of likers. 
+    self.show_likers = function(post_idx) {
+        var p = self.vue.post_list[post_idx];
+        p._show_likers = true;
+        if (!p._likers_known) {
+            $.getJSON(get_likers_url, {post_id: p.id}, function (data) {
+                if (!p._likers_known) {
+                    p._likers = data.likers;
+                    p._likers_known = true;
+                }
+            })
+        }
     };
 
     self.like_click = function (post_idx) {
@@ -110,12 +113,14 @@ var app = function() {
         // We force a refresh.
         p._likers_known = false;
         // We need to post back the change to the server.
-        $.post(set_like_url, {
-            post_id: p.id,
-            like: p.like
-        },
+        $.getJSON(set_like_url, 
+            {
+                post_id: p.id,
+                like: p.like
+            },
         function (data) {
-            self.show_likers(post_idx);
+            p._likers = data.likers;
+            p._likers_known = true;
             p._smile = !p.like;
         });
     };

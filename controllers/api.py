@@ -1,5 +1,6 @@
 # Here go your api methods.
 
+import time
 
 @auth.requires_signature()
 def add_post():
@@ -46,7 +47,7 @@ def get_post_list():
     return response.json(dict(post_list=results))
     
 
-@auth.requires_signature()
+@auth.requires_signature(hash_vars=False)
 def set_like():
     post_id = int(request.vars.post_id)
     like_status = request.vars.like.lower().startswith('t');
@@ -58,8 +59,13 @@ def set_like():
         )
     else:
         db((db.user_like.post_id == post_id) & (db.user_like.user_email == auth.user.email)).delete()
-    return "ok" # Might be useful in debugging.
-
+    # We get directly the list of all the users who liked the post. 
+    rows = db(db.user_like.post_id == post_id).select(db.user_like.user_email)
+    # If the user is logged in, we remove the user from the set.
+    likers_list = [r.user_email for r in rows]
+    likers_list.sort()
+    # We return this list as a dictionary field, to be consistent with all other calls.
+    return response.json(dict(likers=likers_list))
 
 def get_likers():
     """Gets the list of people who liked a post."""
@@ -70,5 +76,6 @@ def get_likers():
     likers_list = [r.user_email for r in rows]
     likers_list.sort()
     # We return this list as a dictionary field, to be consistent with all other calls.
+    time.sleep(5)
     return response.json(dict(likers=likers_list))
 
