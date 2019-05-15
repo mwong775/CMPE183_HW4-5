@@ -20,6 +20,18 @@ def index():
     response.flash = T("Hello World")
     return dict(message=T('Welcome to web2py!'))
 
+def products():
+    query = db.products
+
+    links = []
+
+    grid = SQLFORM.grid(
+        query,
+        links = links,
+        create = True,
+        csv = False
+        )
+    return dict(grid=grid)
 
 def user():
     """
