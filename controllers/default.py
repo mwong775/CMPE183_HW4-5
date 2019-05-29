@@ -7,7 +7,9 @@
 # - user is required for authentication and authorization
 # - download is for downloading files uploaded in the db (does streaming)
 # -------------------------------------------------------------------------
-
+import json
+import os
+import traceback
 
 def index():
     """
@@ -17,11 +19,12 @@ def index():
     if you need a simple wiki simply replace the two lines below with:
     return auth.wiki()
     """
-    response.flash = T("Hello World")
-    return dict(message=T('Welcome to web2py!'))
+    # response.flash = T("Hello World")
+    # return dict(message=T('Welcome to web2py!'))
+    return dict()
 
 def products():
-    query = db.products
+    query = db.product
 
     links = []
 
@@ -29,7 +32,8 @@ def products():
         query,
         links = links,
         create = True,
-        csv = False
+        csv = False,
+        deletable = False
         )
     return dict(grid=grid)
 

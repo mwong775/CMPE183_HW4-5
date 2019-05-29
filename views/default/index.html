@@ -1,11 +1,109 @@
 {{extend 'layout.html'}}
 
 {{block head}}
+<script src="{{=URL('static', 'js/vue.js')}}"></script>
+<script>
+	var add_product_url = "{{=URL('api', 'add_product', user_signature=True)}}";
+	var get_product_list_url = "{{=URL('api', 'get_product_list')}}";
+	var add_review_url = "{{=URL('api', 'add_review', user_signature=True, hash_vars=False)}}";
+	var get_reviews_url = "{{=URL('api', 'get_reviews')}}"
+	var set_stars_url = "{{=URL('api', 'set_stars', user_signature=True, hash_vars=False)}}";
+	var is_logged_in = {{='false' if auth.user is None else 'true'}};
+	// var search_url = "{{=URL('api', 'search', user_signature=True, hash_vars=False)}}";
+</script>
 {{end}}
 
 <div class="main_content">
 
+<div id="vue-div" class="display:none">
   <!-- Here goes your main HTML code. -->
+<div class="search_bar">
+  <input type="text" class="search-bar" v-model="searchbar"placeholder="Search" v-on:input="do_search"/>
+  <div v-for="s in strings"> ${s}</div>
+</div>
+  <!-- Message in case there are no posts. -->
+  <div v-if="product_list.length === 0">There are no products.</div>
+  
+  <div id= "product_list">
+  	<div class="product_div" v-if="product.visible" v-for="product in product_list"> <!-- Product loop starts here -->
+  		<div class="product_name">${product.product_name} $${product.product_price}</div>
+  		<div class="product_description">${product.product_description}</div>
+  		<div class="attributes">
+  		     <!-- Code for start ratings. -->
+        <div class="star_rating" v-if="!product._show_reviews">
+                <span v-for="idx in star_indices">
+                    <i v-if="idx <= product.avg_rating" class="fa fa-star gold"></i>
+                    <i v-if="idx > product.avg_rating" class="fa fa-star-o"></i>
+              </span>
+  
+            <button class="get-reviews" v-if="!product._show_reviews" v-on:click="get_reviews(product._idx)">Reviews</button>
+     </div>
+         <!-- <div class="reviews" v-if="product._show_reviews"> -->
+        	<div class="add_review"  v-if="product._show_reviews">
+        	<div class="container form_row" v-if="is_logged_in">
+        		Your Review:
+              <span v-on:mouseout="stars_out(product._idx)">
+                <span v-on:mouseover="stars_over(product._idx, idx)"
+                      v-on:click="set_stars(product._idx, idx)"
+                      v-for="idx in star_indices">
+                    <i v-if="idx <= product._num_stars_display" class="fa fa-star gold"></i>
+                    <i v-if="idx > product._num_stars_display" class="fa fa-star-o"></i>
+                </span>
+              </span>
+          <!-- </div> -->
+        <!-- <div class="container form_row"> -->
+        	<textarea v-model="form_content"></textarea>
+        	<div class="save">
+        		<button class="add-review save" v-on:click="add_review(product._idx)">Save <i v-if="!confirm" class="fa fa-check" style="color:green"></i></button>
+        	</div>
+       	</div>
+        </div>
+    <!-- </div>   -->
 
+         <!-- Code for reviews. -->
+        <!-- <div class="reviews"> -->
+<!--           <div v-if="product._reviews.length === 0">There are no reviews.</div>
+ -->              <!-- <span class="show_reviews" v-if="product._show_reviews"> -->
+                <div class="toggle_review"
+                      v-on:click="get_reviews(product._idx)">
+                <span v-if="product._show_reviews">
+          <div v-if="product._reviews.length === 0">There are no reviews.</div>
+
+                  <div v-for="review in product._reviews" class="review_container"> <!--REVIEW LOOP-->
+                    <span v-for="idx in star_indices">
+                    <i v-if="idx <= review.rating" class="fa fa-star gold"></i>
+                    <i v-if="idx > review.rating" class="fa fa-star-o"></i>
+              </span>
+  
+                    <div class="review_content">
+                      ${review.review_content}
+                    </div>
+                    <div class="review_author">
+                      ${review.review_author}
+                    </div>
+                  </div>
+               <!--    <span v-if="product._reviews.length > 0">liked it.</span>
+                </span> -->
+            </span>
+        </div>
+    <!-- </span> -->
+    <div class="close">
+    	<button class="hide_reviews" v-if="product._show_reviews" v-on:click="hide_reviews(product._idx)">Close</button>
+    </div>
+      <!-- </div> -->
+    </div>
+<!-- 
+        <span v-if="product.show_reviews">
+        	<span v-for="review in product.review_list" class="review"> 
+        	${reviews.review_content}</span>
+        	<span v-if="product.product_list[product._idx].length > 0">add reviews here?</span>
+        </span> -->
+<!--         <button v-on:click="do_call">Save
+        	<i v-if="confirm" class="fa fa-check"></i></button> -->
+    	</div>
+	</div> 
+  </div>
+</div>
 </div>
 
+<script src="{{=URL('static', 'js/default_index.js')}}"></script>

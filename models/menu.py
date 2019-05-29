@@ -54,7 +54,7 @@ def _():
             (T('Entry1'), False, URL('default', 'entry1')),
             (T('Entry2'), False, URL('default', 'entry2')),
         ]),
-        (T('products'), False, URL('default', 'products'))
+        (T('Products'), False, URL('default', 'products'))
     ]
 
 

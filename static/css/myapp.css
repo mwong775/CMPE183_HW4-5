@@ -2,3 +2,73 @@
 .colorful {
   color: #bb8833;
 }
+
+div.main_content div.product_div {
+  margin: 5%;
+  size: 40%;
+  border: 2px black solid;
+  background-color: #eeeeee;
+  padding: 1%;
+}
+/* line 18, ../sass/_main.scss */
+div.main_content div.product_div .product_name {
+  font-size: 120%;
+  font-weight: bold;
+}
+
+div.form_row {
+  margin: 5%;
+}
+
+i.gold {
+	color: yellow;
+}
+
+div.star_rating {
+  margin: 2%;
+  width: 15%;
+  border: 1px black solid;
+  background-color: #eeeeee;
+  padding: 4px;
+  text-align: center;
+}
+
+div.reviews {
+  width: 50%;
+  height: 20%;
+}
+
+div.main_content div.product_div  .save {
+  margin-top: 2%;
+  text-align: right;
+}
+button.save {
+  text-align: right;
+  background-color: gray;
+}
+
+div.save .i{
+  background-color: blue;
+}
+div.close {
+  text-align: right;
+}
+
+div.review_container {
+  margin: 5%;
+  border: 1px black solid;
+  background-color: #eeeeee;
+  padding: 4px;
+}
+
+div.review_author {
+  text-align: right;
+}
+/*
+.search-bar {
+  border: 2px black solid;
+}*/
+/*div.product {
+	background-color: grey;
+	margin-left: 10%;
+}*/

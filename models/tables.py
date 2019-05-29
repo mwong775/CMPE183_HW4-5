@@ -6,14 +6,49 @@
 #       'date','time','datetime','blob','upload', 'reference TABLENAME'
 # There is an implicit 'id integer autoincrement' field
 # Consult manual for more options, validators, etc.
+import datetime
 
-db.define_table('products',
+def get_user_email():
+	return None if auth.user is None else auth.user.email
+
+def get_current_time():
+    return datetime.datetime.utcnow()
+
+def get_user_name():
+	return None if auth.user is None else auth.user.first_name + " " + auth.user.last_name
+
+
+db.define_table('product',
 				Field('product_name'),
 				Field('product_description', 'text'),
-				Field('product_price', 'float')
-			)
+				Field('product_price', 'float'),
+				Field('avg_rating', 'integer', default=0)
+				#Field('product_time', 'datetime', default=get_current_time()),
+				)
 
-db.products.id.readable = False
-db.products.id.writable = False
+db.product.avg_rating.readable= False;
+db.product.avg_rating.writable= False;
+db.product.product_name.label = T('Name')
+db.product.product_price.label = T('Price')
+
+db.define_table('reviews',
+				#Field('review_id', db.auth_user, default=auth.user_id),
+				Field('review_author', default=get_user_name()),
+				Field('review_content', 'text'),
+				Field('user_email'),
+				Field('product_id', 'reference product'),
+                Field('review_time', 'datetime', default=get_current_time()),
+				#Field('rating', 'integer', default=0)
+				)
+
+db.define_table('stars',
+				Field('user_email'),
+				Field('product_id', 'reference product'),
+				Field('rating', 'integer', default=0),
+				)
+				
+
+db.product.id.readable = False
+db.product.id.writable = False
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
