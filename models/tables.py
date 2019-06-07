@@ -22,8 +22,7 @@ db.define_table('product',
 				Field('product_name'),
 				Field('product_description', 'text'),
 				Field('product_price', 'float'),
-				Field('avg_rating', 'integer', default=0)
-				#Field('product_time', 'datetime', default=get_current_time()),
+				Field('avg_rating', 'integer', default=0),
 				)
 
 db.product.avg_rating.readable= False;
@@ -32,13 +31,11 @@ db.product.product_name.label = T('Name')
 db.product.product_price.label = T('Price')
 
 db.define_table('reviews',
-				#Field('review_id', db.auth_user, default=auth.user_id),
 				Field('review_author', default=get_user_name()),
 				Field('review_content', 'text'),
 				Field('user_email'),
 				Field('product_id', 'reference product'),
                 Field('review_time', 'datetime', default=get_current_time()),
-				#Field('rating', 'integer', default=0)
 				)
 
 db.define_table('stars',
@@ -46,9 +43,16 @@ db.define_table('stars',
 				Field('product_id', 'reference product'),
 				Field('rating', 'integer', default=0),
 				)
+
+db.define_table('shopping_cart',
+				Field('user_email'),
+				Field('product_id', 'reference product'),
+				Field('quantity', 'integer', default=0),
+				)
 				
 
 db.product.id.readable = False
 db.product.id.writable = False
+
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)

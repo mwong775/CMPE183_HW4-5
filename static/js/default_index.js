@@ -22,7 +22,7 @@ var app = function() {
         var r = self.vue.product_list[product_idx];
         console.log("product_idx = " + product_idx);
         var review_list = r._reviews;
-        var sent_content = self.vue.form_content;
+        var sent_content = self.vue.review_content;
 
         $.post(add_review_url, 
             {
@@ -33,7 +33,7 @@ var app = function() {
             function (data) {
                 $.web2py.enableElement($(".add-review"));
 
-                self.vue.form_content=""; // Clears the form??
+                self.vue.review_content=""; // Clears the form??
                 // Adds the product to the list of products
                 var new_review = {
                     id: data.review_id,
@@ -90,12 +90,6 @@ var app = function() {
         $.getJSON(get_product_list_url,
             function(data) {
                 self.vue.product_list = data.product_list;
-                // console.log(self.vue.product_list);
-                // for(let i = 0; i < self.vue.product_list.length; i++) {
-                //     console.log("printing a product:");
-                //     var p = self.vue.product_list[i];
-                //     console.log(p);
-                // }                
                 self.process_products();
                 console.log("product list below:");
                 console.log(self.vue.product_list);
@@ -110,6 +104,81 @@ var app = function() {
             });
     };
 
+    self.show_cart = function() {
+        self.vue.cart_view = !self.vue.cart_view;
+        self.get_cart();
+    }
+
+    self.get_cart = function() {
+        $.getJSON(get_cart_url,
+            function (data) {
+                self.vue.order_list = data.order_list;
+                console.log("TOTAL:" + data.order_total);
+                self.vue.order_total = data.order_total;
+            }
+        );
+        self.process_orders();
+    };
+
+    self.add_cart = function(product_idx) {
+        console.log("ADDED TO CARTTTTT");
+        $.web2py.disableElement($(".add-cart"));
+        var r = self.vue.product_list[product_idx];
+        console.log("product_idx = " + product_idx);
+         var order_quantity = r._order_quantity;
+        if(order_quantity > 0) {
+            console.log("quantity is at least 1");
+            console.log("u want to order " + order_quantity + "of these");
+            $.post(add_cart_url,
+                {
+                    quantity: order_quantity,
+                    product_id: r.id,
+                },
+                function (data) {
+                    $.web2py.enableElement($(".add-cart"));
+
+                    r._order_quantity = ""; // Clears the form..?
+
+                    var new_order = {
+                        id: data.order_id,
+                        quantity: order_quantity,
+                        product_id: r.id,
+                    };
+                    self.vue.order_list.unshift(new_order);
+                    self.process_orders();
+                    self.get_cart();
+                });
+        }
+        else {
+            console.log("pls input quantity"); // no quantity specified
+        }
+    };
+
+    self.clear_cart = function() {
+        $.getJSON(clear_cart_url,
+            function (data) {
+                self.vue.order_list = data.order_list;
+                self.vue.order_total = 0;
+            }
+        );
+        self.hide_cart();
+    }
+
+    self.hide_cart = function() {
+        self.vue.cart_view = !self.vue.cart_view;
+    }
+
+    self.process_orders = function() {
+        console.log("before process orders:");
+        console.log(self.vue.order_list);
+        enumerate(self.vue.order_list);
+        // self.vue.order_list.map(function (e) {
+            // Vue.set(e, 'quantity', e.quantity);
+        // });
+        console.log("after process orders:");
+        console.log(self.vue.order_list);
+    }
+
     self.process_products = function() {
         console.log("before process products:");
         console.log(self.vue.product_list);
@@ -120,6 +189,7 @@ var app = function() {
         self.vue.product_list.map(function (e) {
             Vue.set(e, '_details', false);
             Vue.set(e, '_reviews', []);
+            Vue.set(e, '_order_quantity');
             Vue.set(e, '_show_reviews', false);
             Vue.set(e, '_num_stars_display', 0);
             Vue.set(e, '_set_stars', false);
@@ -139,13 +209,11 @@ var app = function() {
         self.show_reviews(product_idx);
         $.getJSON(get_reviews_url, {product_id: p.id}, 
             function(data) {
-               // self.vue.review_list = data.review_list;
                //self.vue.review_list = data.review_list;
                 p._reviews = data.reviews;
                // product_id: p.id;
                // review_content: p.review_content;
                //review_content: review_idx
-               // self.process_reviews();
             });
         self.process_reviews(product_idx);
         p._show_reviews = true; //!p._show_reviews;
@@ -184,6 +252,7 @@ var app = function() {
         p._details = false; ;
         // console.log("hide reviews:");
         // console.log(p);
+        self.get_products();
     }
 
     // Code for star ratings.
@@ -244,7 +313,13 @@ var app = function() {
             searchbar: '',
             product_name: "",
             product_description: "",
-            form_content:"",
+            review_content:"",
+            order_list: [], // HW5
+            order_name: "",
+            order_price: "",
+            order_quantity: "",
+            order_total: 0,
+            cart_view: false, // HW5
             rating: "",
             username: "",
             product_list: [],
@@ -256,7 +331,13 @@ var app = function() {
            // do_call: self.do_call,
             //confirm: self.confirm,
             do_search: self.do_search,
-            add_product: self.add_product,
+            // add_product: self.add_product,
+            add_cart: self.add_cart, //HW5
+            get_cart: self.get_cart, // HW5
+            clear_cart: self.clear_cart, // HW5
+            show_cart: self.show_cart, // HW5
+            hide_cart: self.hide_cart, // HW5
+            //
             add_review: self.add_review,
             //Show/hide reviews?
             get_reviews: self.get_reviews,
@@ -273,7 +354,6 @@ var app = function() {
     if(is_logged_in) {
         $(".add_review").show();
     }
-    //self.add_product();
     self.get_products();
     self.do_search();
 

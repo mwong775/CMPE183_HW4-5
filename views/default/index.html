@@ -3,8 +3,11 @@
 {{block head}}
 <script src="{{=URL('static', 'js/vue.js')}}"></script>
 <script>
-	var add_product_url = "{{=URL('api', 'add_product', user_signature=True)}}";
 	var get_product_list_url = "{{=URL('api', 'get_product_list')}}";
+  var add_cart_url = "{{=URL('api', 'add_cart', user_signature=True, hash_vars=False)}}";
+  var get_cart_url = "{{=URL('api', 'get_cart', user_signature=True, hash_vars=False)}}";
+  var show_cart_url = "{{=URL('api', 'show_cart', user_signature=True, hash_vars=False)}}";
+  var clear_cart_url = "{{=URL('api', 'clear_cart', user_signature=True, hash_vars=False)}}";
 	var add_review_url = "{{=URL('api', 'add_review', user_signature=True, hash_vars=False)}}";
 	var get_reviews_url = "{{=URL('api', 'get_reviews')}}"
 	var set_stars_url = "{{=URL('api', 'set_stars', user_signature=True, hash_vars=False)}}";
@@ -17,25 +20,44 @@
 <div id="vue-div" class="display:none">
   <!-- Here goes your main HTML code. -->
   <div class="space">
+    <h4 v-if="!is_logged_in">Want to make a purchase? Log in or make a new account!</h4>
   </div>
-<div class="search_bar">
+<div class="search_bar" v-if="!cart_view">
   <input type="text" class="search-bar" v-model="searchbar"placeholder="Search" v-on:input="do_search"/>
   <div v-for="s in strings"> ${s}</div>
 </div>
-<div class="cart">
-  <button class="view_cart">Cart <i class="fa fa-shopping-cart"></i> </button>
+<div class="cart" v-if="is_logged_in">
+  <button  v-if="!cart_view" class="view_cart get-cart" v-on:click="show_cart()">Cart <i class="fa fa-shopping-cart"></i> </button>
+  <button class="cart-exit" v-if="cart_view" v-on:click="hide_cart()">Back to Store</button>
 </div>
+<div class="order_list" v-if="cart_view">
+  <h3>Your Order</h3>
+  <div v-if="order_list.length === 0">There are no items in your cart.</div>
+  <div class="order_div" v-for="order in order_list"> <!-- order loop thru cart starts here -->
+    <div class="order_name">${order.order_name}</div>
+    <div class="order_price">$${order.order_price}</div>
+    <div class="_order_quantity">Quantity: ${order.order_quantity}</div>
+    <!-- <div class="order_name" -->
+  </div>
+    <h3>Order Total: $${order_total}</h3>
+    <a class=" btn place-order" v-if="order_list.length > 0" href="#popup1">Place Order</a>
+    <div class="modal rounded white padded" id="popup1">
+      <h3>Thank you for your order of $${order_total}!</h3>
+      <a class="close" href="#" v-on:click="clear_cart()">x</a>
+      <a class="close btn" href="#" v-on:click="clear_cart()">close</a>
+    </div>
+</div> 
   <!-- Message in case there are no posts. -->
-  <div v-if="product_list.length === 0">There are no products.</div>
   
-  <div id= "product_list">
+  <div id= "product_list" v-if="!cart_view">
+      <div v-if="product_list.length === 0">There are no products.</div>
   	<div class="product_div" v-if="product.visible" v-for="product in product_list"> <!-- Product loop starts here -->
   		<div class="product_name">${product.product_name} $${product.product_price}</div>
   		<div class="product_description">${product.product_description}</div>
-  		<div class="attributes">
-        <div class="buy" v-if="is_logged_in">
-            Quantity: <input class="quantity" type=”number” /> 
-            <button>Buy</button> <!-- STARTED HW5 HERE; put in input: "v-model=”prod.buy_amount” -->
+  		<div class="attributes" >
+        <div class="to-cart" v-if="is_logged_in">
+            Quantity: <input class="quantity" type=”number” v-model="product._order_quantity"/> 
+            <button class="product.add-cart" v-on:click="add_cart(product._idx)">Buy</button> <!-- STARTED HW5 HERE; put in input: "v-model=”prod.buy_amount” -->
         </div>
 
   		     <!-- Code for start ratings. -->
@@ -61,7 +83,7 @@
                     <i v-if="idx > product._num_stars_display" class="fa fa-star-o"></i>
                 </span>
               </span>
-        	<textarea v-model="form_content"></textarea>
+        	<textarea v-model="review_content"></textarea>
         	<div class="save">
         		<button class="add-review save" v-on:click="add_review(product._idx)">Save <i v-if="!confirm" class="fa fa-check" style="color:green"></i></button>
         	</div>
